@@ -1,0 +1,1 @@
+INSERT INTO USERS(name, email, password, avatar) VALUES('User Default', 'user@email.com', '$2a$10$oEfUNPSGE6XTFG3YQ3/C3uQX6YQlRtBFLSifQjNH4l0ZqltWGhMqW', 'default-avatar.png');
