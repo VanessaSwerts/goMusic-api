@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,8 +12,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -30,43 +34,28 @@ public class User implements UserDetails {
 	private String email;
 	private String password;
 	private String avatar;
+	private String country;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	private List<Profile> profiles = new ArrayList<>();
 
+	@OneToMany(mappedBy = "following", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private List<Follow> followings = new ArrayList<>();
+
+	@OneToMany(mappedBy = "follower", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private List<Follow> followers = new ArrayList<>();
+
 	public User() {
 	}
 
-	public User(String name, String email, String password, String avatar) {
+	public User(String name, String email, String password, String avatar, String country) {
 		this.name = name;
 		this.email = email;
 		this.password = password;
 		this.avatar = avatar;
-	}
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		User other = (User) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
+		this.country = country;
 	}
 
 	public Long getId() {
@@ -91,6 +80,42 @@ public class User implements UserDetails {
 
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public List<User> getFollowers() {
+		List<User> users = new ArrayList<>();
+
+		followers.forEach(userFollow -> {
+			users.add(userFollow.getFollowing());
+		});
+
+		return users;
+	}
+
+	public void setFollowers(List<Follow> followers) {
+		this.followers = followers;
+	}
+
+	public List<User> getFollowings() {
+		List<User> users = new ArrayList<>();
+
+		followings.forEach(userFollow -> {
+			users.add(userFollow.getFollower());
+		});
+
+		return users;
+	}
+
+	public void setFollowings(List<Follow> followings) {
+		this.followings = followings;
 	}
 
 	@Override

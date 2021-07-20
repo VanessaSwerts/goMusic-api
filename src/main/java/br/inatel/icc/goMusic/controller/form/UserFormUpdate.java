@@ -14,12 +14,21 @@ public class UserFormUpdate {
 	@Length(min = 3)
 	private String name;
 	
+	@NotNull
+	@NotEmpty
+	private String country;
+	
 	public String getName() {
 		return name;
 	}
 	
+	public String getCountry() {
+		return country;
+	}
+	
 	public User updateUser(User user) {
 		user.setName(name);
+		user.setCountry(country);
 		return user;
 	}
 }

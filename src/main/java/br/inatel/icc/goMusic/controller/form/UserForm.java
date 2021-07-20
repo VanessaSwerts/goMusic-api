@@ -25,7 +25,11 @@ public class UserForm {
 	@Length(min = 8)
 	private String password;
 
-	private String avatar="default-avatar.png";
+	private String avatar = "default-avatar.png";
+
+	@NotNull
+	@NotEmpty
+	private String country;
 
 	public String getName() {
 		return name;
@@ -43,8 +47,12 @@ public class UserForm {
 		return avatar;
 	}
 
+	public String getCountry() {
+		return country;
+	}
+
 	public User convertToUser() {
-		return new User(name, email, encryptPassword(), avatar);
+		return new User(name, email, encryptPassword(), avatar, country);
 	}
 
 	private String encryptPassword() {

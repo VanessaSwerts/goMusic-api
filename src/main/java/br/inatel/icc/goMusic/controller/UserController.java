@@ -1,6 +1,7 @@
 package br.inatel.icc.goMusic.controller;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -8,6 +9,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +24,7 @@ import br.inatel.icc.goMusic.controller.dto.UserDto;
 import br.inatel.icc.goMusic.controller.form.UserForm;
 import br.inatel.icc.goMusic.controller.form.UserFormUpdate;
 import br.inatel.icc.goMusic.model.User;
+import br.inatel.icc.goMusic.repository.FollowRepository;
 import br.inatel.icc.goMusic.repository.UserRepository;
 
 @RestController
@@ -29,10 +32,12 @@ import br.inatel.icc.goMusic.repository.UserRepository;
 public class UserController {
 
 	private UserRepository userRepository;
+	private FollowRepository followRepository;
 
 	@Autowired
-	public UserController(UserRepository userRepository) {
+	public UserController(UserRepository userRepository, FollowRepository followRepository) {
 		this.userRepository = userRepository;
+		this.followRepository = followRepository;
 	}
 
 	@PostMapping
@@ -78,6 +83,32 @@ public class UserController {
 		if (optionalUser.isPresent()) {
 			userRepository.deleteById(id);
 			return ResponseEntity.ok().build();
+		}
+
+		return ResponseEntity.notFound().build();
+	}
+
+	@GetMapping("/{id}/followers")
+	@Transactional
+	public ResponseEntity<List<UserDto>> listFollowers(@PathVariable("id") Long id) {
+		Optional<User> optionalUser = userRepository.findById(id);
+
+		if (optionalUser.isPresent()) {
+			List<UserDto> followersList = UserDto.convertToDtoList(optionalUser.get().getFollowers());
+			return ResponseEntity.ok(followersList);
+		}
+
+		return ResponseEntity.notFound().build();
+	}
+
+	@GetMapping("/{id}/followings")
+	@Transactional
+	public ResponseEntity<List<UserDto>> listFollowings(@PathVariable("id") Long id) {
+		Optional<User> optionalUser = userRepository.findById(id);
+
+		if (optionalUser.isPresent()) {
+			List<UserDto> followingsList = UserDto.convertToDtoList(optionalUser.get().getFollowings());
+			return ResponseEntity.ok(followingsList);
 		}
 
 		return ResponseEntity.notFound().build();
