@@ -106,7 +106,7 @@ public class User implements UserDetails {
 
 	public List<User> getFollowings() {
 		List<User> users = new ArrayList<>();
-
+		
 		followings.forEach(userFollow -> {
 			users.add(userFollow.getFollower());
 		});

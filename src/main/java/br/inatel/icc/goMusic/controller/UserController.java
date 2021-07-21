@@ -23,6 +23,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import br.inatel.icc.goMusic.controller.dto.UserDto;
 import br.inatel.icc.goMusic.controller.form.UserForm;
 import br.inatel.icc.goMusic.controller.form.UserFormUpdate;
+import br.inatel.icc.goMusic.model.Follow;
 import br.inatel.icc.goMusic.model.User;
 import br.inatel.icc.goMusic.repository.FollowRepository;
 import br.inatel.icc.goMusic.repository.UserRepository;
@@ -109,6 +110,53 @@ public class UserController {
 		if (optionalUser.isPresent()) {
 			List<UserDto> followingsList = UserDto.convertToDtoList(optionalUser.get().getFollowings());
 			return ResponseEntity.ok(followingsList);
+		}
+
+		return ResponseEntity.notFound().build();
+	}
+
+	@PutMapping("/follow/{id}")
+	@Transactional
+	public ResponseEntity<?> addFollow(Authentication authentication, @PathVariable("id") Long id) {
+		User authenticatedUser = (User) authentication.getPrincipal();
+		User userLogged = userRepository.getById(authenticatedUser.getId());
+
+		Optional<User> userToFollow = userRepository.findById(id);
+
+		if (userToFollow.isPresent()) {
+			Optional<Follow> isFollowing = followRepository.findByFollowingAndFollower(userLogged, userToFollow.get());
+
+			if (isFollowing.isPresent()) {
+				return ResponseEntity.status(202).build();
+			}
+
+			Follow newFollow = new Follow(userLogged, userToFollow.get());
+			followRepository.save(newFollow);
+
+			return ResponseEntity.ok().build();
+		}
+
+		return ResponseEntity.notFound().build();
+	}
+	
+	@DeleteMapping("/unfollow/{id}")
+	@Transactional
+	public ResponseEntity<?> unFollow(Authentication authentication, @PathVariable("id") Long id) {
+		User authenticatedUser = (User) authentication.getPrincipal();
+		User userLogged = userRepository.getById(authenticatedUser.getId());
+
+		Optional<User> userToUnfollow = userRepository.findById(id);
+
+		if (userToUnfollow.isPresent()) {
+			Optional<Follow> isFollowing = followRepository.findByFollowingAndFollower(userLogged, userToUnfollow.get());
+
+			if (isFollowing.isEmpty()) {
+				return ResponseEntity.status(403).build();
+			}
+
+			followRepository.deleteById(isFollowing.get().getId());
+
+			return ResponseEntity.ok().build();
 		}
 
 		return ResponseEntity.notFound().build();
