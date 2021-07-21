@@ -18,7 +18,7 @@ goMusic API
 
 -----
 
-✍️ API Requirements
+## ✍️  API Requirements 
 
 ### Must to have
 - [ ] Comunicar com uma API externa (desenvolvida pelo colaborador ou por terceiros).
@@ -33,13 +33,13 @@ goMusic API
 
 -----
 
-📚 Features
+## 📚 Features
 
   <table border="0" width="100%"
   >
   <tr>
 
-  <td width="40%" valign="top" border="0">
+  <td width="30%" valign="top" border="0">
 
   ## User
   - [x] CREATE
@@ -48,7 +48,7 @@ goMusic API
   - [x] DELETE
 
   </td>
-  <td width="40%" valign="top">
+  <td width="30%" valign="top">
 
   ## Follow
   - [x] CREATE
@@ -56,7 +56,7 @@ goMusic API
   - [x] DELETE
 
   </td>
-  <td width="40%" valign="top">
+  <td width="30%" valign="top">
 
   ## Playlist
   - [x] CREATE
