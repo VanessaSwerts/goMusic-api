@@ -14,7 +14,63 @@
 
 ## 💻 Sobre 
 
-GoMusic API 
+goMusic API 
+
+-----
+
+✍️ API Requirements
+
+### Must to have
+- [ ] Comunicar com uma API externa (desenvolvida pelo colaborador ou por terceiros).
+- [x] Persistir dados num BD relacional (não relacional é "nice to have").
+- [ ] Apresentar alguns testes unitários e funcionais.
+
+### Nice to have
+- [ ] Organização do código.
+- [ ] Logging.
+- [x] Segurança (ex: JWT).
+- [ ] Cache.
+
+-----
+
+📚 Features
+
+  <table border="0" width="100%"
+  >
+  <tr>
+
+  <td width="40%" valign="top" border="0">
+
+  ## User
+  - [x] CREATE
+  - [x] LIST
+  - [x] UPDATE
+  - [x] DELETE
+
+  </td>
+  <td width="40%" valign="top">
+
+  ## Follow
+  - [x] CREATE
+  - [x] LIST
+  - [x] DELETE
+
+  </td>
+  <td width="40%" valign="top">
+
+  ## Playlist
+  - [x] CREATE
+  - [x] LIST
+  - [x] UPDATE
+  - [x] DELETE
+  </td>
+
+  </td>
+
+</tr>
+</table>
+
+-----
 
 ## 🚀 Como executar o projeto
 
@@ -22,6 +78,8 @@ GoMusic API
 2. Clone este repositório: git clone https://github.com/VanessaSwerts/goMusic-api.git
 3. Abra o projeto no Eclipse IDE
 5. Rode o projeto e acesse http://localhost:8080
+
+-----
 
 ## 🛠 Tecnologias
 
