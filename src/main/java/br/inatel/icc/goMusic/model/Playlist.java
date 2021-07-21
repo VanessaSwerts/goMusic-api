@@ -19,6 +19,8 @@ public class Playlist {
 
 	@ManyToOne
 	private User owner;
+	
+	// Lista de músicas
 
 	public Playlist() {
 	}
@@ -48,6 +50,18 @@ public class Playlist {
 
 	public User getOwner() {
 		return owner;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
 	}
 
 }

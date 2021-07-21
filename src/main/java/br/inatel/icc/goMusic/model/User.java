@@ -39,6 +39,10 @@ public class User implements UserDetails {
 	@ManyToMany(fetch = FetchType.EAGER)
 	private List<Profile> profiles = new ArrayList<>();
 
+	@OneToMany(mappedBy = "owner", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private List<Playlist> playlists = new ArrayList<>();
+
 	@OneToMany(mappedBy = "following", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<Follow> followings = new ArrayList<>();
@@ -106,7 +110,7 @@ public class User implements UserDetails {
 
 	public List<User> getFollowings() {
 		List<User> users = new ArrayList<>();
-		
+
 		followings.forEach(userFollow -> {
 			users.add(userFollow.getFollower());
 		});
@@ -121,6 +125,14 @@ public class User implements UserDetails {
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return this.profiles;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public List<Playlist> getPlaylists() {
+		return playlists;
 	}
 
 	@Override
