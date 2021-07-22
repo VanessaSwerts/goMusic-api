@@ -1,13 +1,16 @@
 package br.inatel.icc.goMusic.controller;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,9 +20,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.inatel.icc.goMusic.config.cloudinary.CloudinaryService;
 import br.inatel.icc.goMusic.controller.dto.PlaylistDto;
 import br.inatel.icc.goMusic.controller.dto.UserDto;
 import br.inatel.icc.goMusic.controller.form.UserForm;
@@ -35,16 +41,24 @@ public class UserController {
 
 	private UserRepository userRepository;
 	private FollowRepository followRepository;
+	private CloudinaryService cloudinaryService;
 
 	@Autowired
-	public UserController(UserRepository userRepository, FollowRepository followRepository) {
+	public UserController(UserRepository userRepository, FollowRepository followRepository,
+			CloudinaryService cloudinaryService) {
 		this.userRepository = userRepository;
 		this.followRepository = followRepository;
+		this.cloudinaryService = cloudinaryService;
 	}
 
 	@PostMapping
 	@Transactional
-	public ResponseEntity<UserDto> create(@RequestBody @Valid UserForm form, UriComponentsBuilder uriBuilder) {
+	public ResponseEntity<UserDto> create(@RequestBody @Valid UserForm form,
+			UriComponentsBuilder uriBuilder) throws IOException {	
+		
+		String avatar = cloudinaryService.getCloudinaryDefault() + "/user/" + "default-avatar.jpg";	
+		form.setAvatar(avatar);
+		
 		User newUser = form.convertToUser();
 		userRepository.save(newUser);
 
@@ -79,6 +93,27 @@ public class UserController {
 
 		return ResponseEntity.notFound().build();
 	}
+	
+	@SuppressWarnings("rawtypes")
+	@PutMapping("/avatar")
+	@Transactional
+	public ResponseEntity<UserDto> updateAvatar(Authentication authentication, @RequestParam("file") MultipartFile file)
+			throws IOException {		
+		User authenticatedUser = (User) authentication.getPrincipal();
+		Long authenticatedUserId = authenticatedUser.getId();
+
+		Optional<User> optionalUser = userRepository.findById(authenticatedUserId);
+
+		if (optionalUser.isPresent()) {
+			Map uploadResult = cloudinaryService.upload(file, "user");
+			String avatar = uploadResult.get("public_id").toString() + "." + uploadResult.get("format").toString();
+			
+			optionalUser.get().setAvatar(avatar);
+			return ResponseEntity.ok(new UserDto(optionalUser.get()));
+		}
+
+		return ResponseEntity.status(404).build();
+	}
 
 	@DeleteMapping()
 	@Transactional
@@ -89,6 +124,11 @@ public class UserController {
 		Optional<User> optionalUser = userRepository.findById(authenticatedUserId);
 
 		if (optionalUser.isPresent()) {
+			
+			optionalUser.get().getFollowers().clear();
+			optionalUser.get().getFollowings().clear();
+			optionalUser.get().getLikedPlaylists().clear();		
+			
 			userRepository.deleteById(authenticatedUserId);
 			return ResponseEntity.ok().build();
 		}
@@ -184,6 +224,7 @@ public class UserController {
 	}
 
 	@GetMapping("/{id}/playlistsCreated")
+	@Cacheable(value = "userCreatedPlaylists")
 	public ResponseEntity<List<PlaylistDto>> listUserPlaylistsCreated(@PathVariable("id") Long id) {
 		Optional<User> optionalUser = userRepository.findById(id);
 

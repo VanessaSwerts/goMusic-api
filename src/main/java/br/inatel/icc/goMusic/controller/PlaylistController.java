@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -49,6 +50,7 @@ public class PlaylistController {
 
 	@PostMapping
 	@Transactional
+	@CacheEvict(value = "userCreatedPlaylists", allEntries = true)
 	public ResponseEntity<PlaylistDto> create(Authentication authentication, @RequestBody @Valid PlaylistForm form,
 			UriComponentsBuilder uriBuilder) {
 
@@ -79,6 +81,7 @@ public class PlaylistController {
 
 	@PutMapping("/{id}")
 	@Transactional
+	@CacheEvict(value = "userCreatedPlaylists", allEntries = true)
 	public ResponseEntity<PlaylistDto> update(Authentication authentication, @PathVariable("id") Long id,
 			@RequestBody @Valid PlaylistFormUpdate form) {
 
@@ -102,6 +105,7 @@ public class PlaylistController {
 
 	@DeleteMapping("/{id}")
 	@Transactional
+	@CacheEvict(value = "userCreatedPlaylists", allEntries = true)
 	public ResponseEntity<?> delete(Authentication authentication, @PathVariable("id") Long id) {
 
 		User authenticatedUser = (User) authentication.getPrincipal();

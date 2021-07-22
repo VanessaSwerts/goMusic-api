@@ -25,7 +25,7 @@ public class UserForm {
 	@Length(min = 8)
 	private String password;
 
-	private String avatar = "default-avatar.png";
+	private String avatar;
 
 	@NotNull
 	@NotEmpty
@@ -49,6 +49,10 @@ public class UserForm {
 
 	public String getCountry() {
 		return country;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
 	}
 
 	public User convertToUser() {
