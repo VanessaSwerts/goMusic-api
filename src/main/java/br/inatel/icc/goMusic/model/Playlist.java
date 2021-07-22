@@ -1,10 +1,18 @@
 package br.inatel.icc.goMusic.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 public class Playlist {
@@ -19,7 +27,11 @@ public class Playlist {
 
 	@ManyToOne
 	private User owner;
-	
+
+	@OneToMany(mappedBy = "playlist", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private List<Like> likes = new ArrayList<>();
+
 	// Lista de músicas
 
 	public Playlist() {
@@ -62,6 +74,20 @@ public class Playlist {
 
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
+	}
+
+	public List<User> getLikes() {
+		List<User> users = new ArrayList<>();
+
+		likes.forEach(userLike -> {
+			users.add(userLike.getUser());
+		});
+
+		return users;
+	}
+
+	public void setLikes(List<Like> likes) {
+		this.likes = likes;
 	}
 
 }

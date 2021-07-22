@@ -5,38 +5,40 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
-public class Follow {
+@Table(name = "likes")
+public class Like {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@ManyToOne
-	private User following;
+	private Playlist playlist;
 
 	@ManyToOne
-	private User follower;
+	private User user;
 
-	public Follow() {
+	public Like() {
 	}
 
-	public Follow(User following, User follower) {
-		this.following = following;
-		this.follower = follower;
+	public Like(Playlist playlist, User user) {
+		this.playlist = playlist;
+		this.user = user;
 	}
 
 	public Long getId() {
 		return id;
 	}
 
-	public User getFollowing() {
-		return following;
+	public Playlist getPlaylist() {
+		return playlist;
 	}
 
-	public User getFollower() {
-		return follower;
+	public User getUser() {
+		return user;
 	}
 
 }

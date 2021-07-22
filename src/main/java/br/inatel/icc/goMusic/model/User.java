@@ -41,7 +41,11 @@ public class User implements UserDetails {
 
 	@OneToMany(mappedBy = "owner", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	private List<Playlist> playlists = new ArrayList<>();
+	private List<Playlist> myPlaylists = new ArrayList<>();
+
+	@OneToMany(mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private List<Like> likedPlaylists = new ArrayList<>();
 
 	@OneToMany(mappedBy = "following", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@OnDelete(action = OnDeleteAction.CASCADE)
@@ -104,6 +108,20 @@ public class User implements UserDetails {
 		return users;
 	}
 
+	public List<Playlist> getLikedPlaylists() {
+		List<Playlist> playlists = new ArrayList<>();
+
+		likedPlaylists.forEach(playlistLiked -> {
+			playlists.add(playlistLiked.getPlaylist());
+		});
+
+		return playlists;
+	}
+
+	public void setLikedPlaylists(List<Like> liked) {
+		this.likedPlaylists = liked;
+	}
+
 	public void setFollowers(List<Follow> followers) {
 		this.followers = followers;
 	}
@@ -132,7 +150,7 @@ public class User implements UserDetails {
 	}
 
 	public List<Playlist> getPlaylists() {
-		return playlists;
+		return myPlaylists;
 	}
 
 	@Override

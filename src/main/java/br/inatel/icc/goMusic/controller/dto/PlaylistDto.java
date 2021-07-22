@@ -1,5 +1,6 @@
 package br.inatel.icc.goMusic.controller.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,6 +12,7 @@ public class PlaylistDto {
 	private String title;
 	private String description;
 	private String avatar;
+	private int totalLikes;
 	private UserDto owner;
 
 	public PlaylistDto(Playlist playlist) {
@@ -18,6 +20,7 @@ public class PlaylistDto {
 		this.title = playlist.getTitle();
 		this.description = playlist.getDescription();
 		this.avatar = playlist.getAvatar();
+		this.totalLikes = playlist.getLikes().size();
 		this.owner = new UserDto(playlist.getOwner());
 	}
 
@@ -40,13 +43,27 @@ public class PlaylistDto {
 	public String getAvatar() {
 		return avatar;
 	}
-	
+
+	public int getTotalLikes() {
+		return totalLikes;
+	}
+
 	public boolean isOwner(Long id) {
 		return this.owner.getId() == id;
 	}
 
 	public static List<PlaylistDto> convertToDtoList(List<Playlist> playlists) {
 		List<PlaylistDto> playlistDto = playlists.stream().map(PlaylistDto::new).collect(Collectors.toList());
+		return playlistDto;
+	}
+
+	public static List<PlaylistDto> concatTwoDtoList(List<Playlist> fisrtList, List<Playlist> secondList) {
+		List<Playlist> allPlaylists = new ArrayList<>();
+		allPlaylists.addAll(fisrtList);
+		allPlaylists.addAll(secondList);
+
+		List<PlaylistDto> playlistDto = convertToDtoList(allPlaylists);
+
 		return playlistDto;
 	}
 

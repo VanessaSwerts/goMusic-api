@@ -14,6 +14,7 @@ public class UserDto {
 
 	private int totalFollowers;
 	private int totalFollowings;
+	private int totalLikedPlaylists;
 
 	public UserDto(User user) {
 		this.id = user.getId();
@@ -22,6 +23,7 @@ public class UserDto {
 		this.country = user.getCountry();
 		this.totalFollowers = user.getFollowers().size();
 		this.totalFollowings = user.getFollowings().size();
+		this.totalLikedPlaylists = user.getLikedPlaylists().size();
 	}
 
 	public Long getId() {
@@ -34,6 +36,10 @@ public class UserDto {
 
 	public String getAvatar() {
 		return avatar;
+	}
+
+	public int getTotalLikedPlaylists() {
+		return totalLikedPlaylists;
 	}
 
 	public String getCountry() {

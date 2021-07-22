@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.inatel.icc.goMusic.controller.dto.PlaylistDto;
 import br.inatel.icc.goMusic.controller.dto.UserDto;
 import br.inatel.icc.goMusic.controller.form.UserForm;
 import br.inatel.icc.goMusic.controller.form.UserFormUpdate;
@@ -63,10 +64,13 @@ public class UserController {
 		return ResponseEntity.notFound().build();
 	}
 
-	@PutMapping("/{id}")
+	@PutMapping()
 	@Transactional
-	public ResponseEntity<UserDto> update(@PathVariable("id") Long id, @RequestBody @Valid UserFormUpdate form) {
-		Optional<User> optionalUser = userRepository.findById(id);
+	public ResponseEntity<UserDto> update(Authentication authentication, @RequestBody @Valid UserFormUpdate form) {
+		User authenticatedUser = (User) authentication.getPrincipal();
+		Long authenticatedUserId = authenticatedUser.getId();
+
+		Optional<User> optionalUser = userRepository.findById(authenticatedUserId);
 
 		if (optionalUser.isPresent()) {
 			User updatedUser = form.updateUser(optionalUser.get());
@@ -76,13 +80,16 @@ public class UserController {
 		return ResponseEntity.notFound().build();
 	}
 
-	@DeleteMapping("/{id}")
+	@DeleteMapping()
 	@Transactional
-	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
-		Optional<User> optionalUser = userRepository.findById(id);
+	public ResponseEntity<?> delete(Authentication authentication) {
+		User authenticatedUser = (User) authentication.getPrincipal();
+		Long authenticatedUserId = authenticatedUser.getId();
+
+		Optional<User> optionalUser = userRepository.findById(authenticatedUserId);
 
 		if (optionalUser.isPresent()) {
-			userRepository.deleteById(id);
+			userRepository.deleteById(authenticatedUserId);
 			return ResponseEntity.ok().build();
 		}
 
@@ -138,17 +145,18 @@ public class UserController {
 
 		return ResponseEntity.notFound().build();
 	}
-	
+
 	@DeleteMapping("/unfollow/{id}")
 	@Transactional
-	public ResponseEntity<?> unFollow(Authentication authentication, @PathVariable("id") Long id) {
+	public ResponseEntity<?> unfollow(Authentication authentication, @PathVariable("id") Long id) {
 		User authenticatedUser = (User) authentication.getPrincipal();
 		User userLogged = userRepository.getById(authenticatedUser.getId());
 
 		Optional<User> userToUnfollow = userRepository.findById(id);
 
 		if (userToUnfollow.isPresent()) {
-			Optional<Follow> isFollowing = followRepository.findByFollowingAndFollower(userLogged, userToUnfollow.get());
+			Optional<Follow> isFollowing = followRepository.findByFollowingAndFollower(userLogged,
+					userToUnfollow.get());
 
 			if (isFollowing.isEmpty()) {
 				return ResponseEntity.status(403).build();
@@ -160,6 +168,43 @@ public class UserController {
 		}
 
 		return ResponseEntity.notFound().build();
+	}
+
+	@GetMapping("/{id}/playlists")
+	public ResponseEntity<List<PlaylistDto>> listUserPlaylists(@PathVariable("id") Long id) {
+		Optional<User> optionalUser = userRepository.findById(id);
+
+		if (optionalUser.isPresent()) {
+			List<PlaylistDto> playlists = PlaylistDto.concatTwoDtoList(optionalUser.get().getPlaylists(),
+					optionalUser.get().getLikedPlaylists());
+			return ResponseEntity.ok().body(playlists);
+		}
+
+		return ResponseEntity.status(404).build();
+	}
+
+	@GetMapping("/{id}/playlistsCreated")
+	public ResponseEntity<List<PlaylistDto>> listUserPlaylistsCreated(@PathVariable("id") Long id) {
+		Optional<User> optionalUser = userRepository.findById(id);
+
+		if (optionalUser.isPresent()) {
+			List<PlaylistDto> playlistsCreated = PlaylistDto.convertToDtoList(optionalUser.get().getPlaylists());
+			return ResponseEntity.ok().body(playlistsCreated);
+		}
+
+		return ResponseEntity.status(404).build();
+	}
+
+	@GetMapping("/{id}/playlistsLiked")
+	public ResponseEntity<List<PlaylistDto>> listUserPlaylistsLiked(@PathVariable("id") Long id) {
+		Optional<User> optionalUser = userRepository.findById(id);
+
+		if (optionalUser.isPresent()) {
+			List<PlaylistDto> playlistsLiked = PlaylistDto.convertToDtoList(optionalUser.get().getLikedPlaylists());
+			return ResponseEntity.ok().body(playlistsLiked);
+		}
+
+		return ResponseEntity.status(404).build();
 	}
 
 }
