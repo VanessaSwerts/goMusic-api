@@ -257,7 +257,7 @@ public class PlaylistController {
 
 			Songs newSong = form.convertToSong(tracks.getData().get(0), currentPlaylist);
 			songsrepository.save(newSong);
-			
+
 			PlaylistSongs playlistSongs = new PlaylistSongs(currentPlaylist, newSong);
 			playlistSongsRepository.save(playlistSongs);
 
@@ -266,7 +266,37 @@ public class PlaylistController {
 		}
 
 		return ResponseEntity.notFound().build();
+	}
 
+	@DeleteMapping("/{id}/songs/{songId}")
+	@Transactional
+	public ResponseEntity<?> removeSong(Authentication authentication, @PathVariable("id") Long id,
+			@PathVariable("songId") Long songId) {
+		User authenticatedUser = (User) authentication.getPrincipal();
+		Long authenticatedUserId = authenticatedUser.getId();
+
+		Optional<Playlist> optionalPlaylist = playlistRepository.findById(id);
+		Optional<Songs> optionalSong = songsrepository.findById(songId);
+
+		if (optionalPlaylist.isPresent() && optionalSong.isPresent()) {
+
+			if (authenticatedUserId != optionalPlaylist.get().getOwner().getId()) {
+				return ResponseEntity.status(403).build();
+			}
+
+			Optional<PlaylistSongs> songExistsInPlaylist = playlistSongsRepository
+					.findByPlaylistAndSongs(optionalPlaylist.get(), optionalSong.get());
+
+			if (songExistsInPlaylist.isEmpty()) {
+				return ResponseEntity.status(403).build();
+			}
+
+			playlistSongsRepository.deleteById(songExistsInPlaylist.get().getId());
+
+			return ResponseEntity.ok().build();
+		}
+
+		return ResponseEntity.notFound().build();
 	}
 
 }
