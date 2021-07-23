@@ -1,5 +1,6 @@
 package br.inatel.icc.goMusic.controller.form;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -17,7 +18,7 @@ public class UserForm {
 
 	@NotNull
 	@NotEmpty
-	@Length(min = 10)
+	@Email
 	private String email;
 
 	@NotNull

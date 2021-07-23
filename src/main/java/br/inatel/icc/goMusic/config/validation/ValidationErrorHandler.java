@@ -22,22 +22,22 @@ public class ValidationErrorHandler {
 	public ValidationErrorHandler(MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
-	
+
 	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public List<FormErrorDto> fieldErrorHandle(MethodArgumentNotValidException exception){
+	public List<FormErrorDto> fieldErrorHandle(MethodArgumentNotValidException exception) {
 		List<FormErrorDto> errors = new ArrayList<>();
-		
+
 		List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
 		fieldErrors.forEach(err -> {
 			String field = err.getField();
 			String message = messageSource.getMessage(err, LocaleContextHolder.getLocale());
-		
+
 			FormErrorDto errorDto = new FormErrorDto(field, message);
-			
+
 			errors.add(errorDto);
 		});
-		
+
 		return errors;
 	}
 

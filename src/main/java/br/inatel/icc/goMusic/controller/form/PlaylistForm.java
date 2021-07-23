@@ -15,7 +15,7 @@ public class PlaylistForm {
 	@Length(min = 3)
 	private String title;
 	private String description;
-	private String avatar = "default-avatar.png";
+	private String avatar;
 
 	private User owner;
 
@@ -25,6 +25,10 @@ public class PlaylistForm {
 
 	public String getDescription() {
 		return description;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
 	}
 
 	public String getAvatar() {

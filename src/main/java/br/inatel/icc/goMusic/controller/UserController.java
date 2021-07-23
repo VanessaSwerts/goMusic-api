@@ -53,12 +53,12 @@ public class UserController {
 
 	@PostMapping
 	@Transactional
-	public ResponseEntity<UserDto> create(@RequestBody @Valid UserForm form,
-			UriComponentsBuilder uriBuilder) throws IOException {	
-		
-		String avatar = cloudinaryService.getCloudinaryDefault() + "/user/" + "default-avatar.jpg";	
+	public ResponseEntity<UserDto> create(@RequestBody @Valid UserForm form, UriComponentsBuilder uriBuilder)
+			throws IOException {
+
+		String avatar = cloudinaryService.getCloudinaryDefault() + "/user/" + "default-avatar.png";
 		form.setAvatar(avatar);
-		
+
 		User newUser = form.convertToUser();
 		userRepository.save(newUser);
 
@@ -93,12 +93,12 @@ public class UserController {
 
 		return ResponseEntity.notFound().build();
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	@PutMapping("/avatar")
 	@Transactional
 	public ResponseEntity<UserDto> updateAvatar(Authentication authentication, @RequestParam("file") MultipartFile file)
-			throws IOException {		
+			throws IOException {
 		User authenticatedUser = (User) authentication.getPrincipal();
 		Long authenticatedUserId = authenticatedUser.getId();
 
@@ -107,7 +107,7 @@ public class UserController {
 		if (optionalUser.isPresent()) {
 			Map uploadResult = cloudinaryService.upload(file, "user");
 			String avatar = uploadResult.get("public_id").toString() + "." + uploadResult.get("format").toString();
-			
+
 			optionalUser.get().setAvatar(avatar);
 			return ResponseEntity.ok(new UserDto(optionalUser.get()));
 		}
@@ -124,11 +124,11 @@ public class UserController {
 		Optional<User> optionalUser = userRepository.findById(authenticatedUserId);
 
 		if (optionalUser.isPresent()) {
-			
+
 			optionalUser.get().getFollowers().clear();
 			optionalUser.get().getFollowings().clear();
-			optionalUser.get().getLikedPlaylists().clear();		
-			
+			optionalUser.get().getLikedPlaylists().clear();
+
 			userRepository.deleteById(authenticatedUserId);
 			return ResponseEntity.ok().build();
 		}
