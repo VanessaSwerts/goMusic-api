@@ -4,12 +4,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import br.inatel.icc.goMusic.model.Songs;
+import br.inatel.icc.goMusic.util.FormatData;
 
 public class SongsDto {
 
 	private Integer songId;
 	private String title;
-	private int duration;
+	private String duration;
 	private String url;
 	private String album;
 	private String artist;
@@ -17,7 +18,7 @@ public class SongsDto {
 	public SongsDto(Songs song) {
 		this.songId = song.getSongId();
 		this.title = song.getTitle();
-		this.duration = song.getDuration();
+		this.duration = FormatData.formatDuration(song.getDuration());
 		this.url = song.getUrl();
 		this.album = song.getAlbum();
 		this.artist = song.getArtist();
@@ -31,7 +32,7 @@ public class SongsDto {
 		return title;
 	}
 
-	public int getDuration() {
+	public String getDuration() {
 		return duration;
 	}
 

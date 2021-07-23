@@ -3,9 +3,9 @@ package br.inatel.icc.goMusic.controller.form;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import br.inatel.icc.goMusic.domain.Track;
 import br.inatel.icc.goMusic.model.Playlist;
 import br.inatel.icc.goMusic.model.Songs;
-import br.inatel.icc.goMusic.model.Track;
 
 public class SearchForm {
 

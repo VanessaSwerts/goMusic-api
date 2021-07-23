@@ -14,7 +14,7 @@ public class PlaylistDto {
 	private String avatar;
 	private int totalLikes;
 	private UserDto owner;
-//	private List<SongsDto> songs;
+	private List<SongsDto> songs;
 	private int totalSongs;
 
 	public PlaylistDto(Playlist playlist) {
@@ -25,8 +25,8 @@ public class PlaylistDto {
 		this.totalLikes = playlist.getLikes().size();
 		this.owner = new UserDto(playlist.getOwner());
 
-//		this.songs = new ArrayList<>();		
-//		this.songs = SongsDto.convertToDtoList(playlist.getSongs());
+		this.songs = new ArrayList<>();
+		this.songs = SongsDto.convertToDtoList(playlist.getSongs());
 		this.totalSongs = playlist.getSongs().size();
 	}
 
@@ -58,9 +58,10 @@ public class PlaylistDto {
 		return this.owner.getId() == id;
 	}
 
-//	public List<SongsDto> getSongs() {
-//		return songs;
-//	}
+	public List<SongsDto> getSongs() {
+		return songs;
+	}
+
 	public int getTotalSongs() {
 		return totalSongs;
 	}

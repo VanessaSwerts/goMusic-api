@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import br.inatel.icc.goMusic.model.Artists;
-import br.inatel.icc.goMusic.model.Tracks;
+import br.inatel.icc.goMusic.domain.Artists;
+import br.inatel.icc.goMusic.domain.Tracks;
 import br.inatel.icc.goMusic.util.UrlConfigs;
 
 @Service("apiService")

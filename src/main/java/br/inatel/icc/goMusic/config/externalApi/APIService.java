@@ -1,7 +1,7 @@
 package br.inatel.icc.goMusic.config.externalApi;
 
-import br.inatel.icc.goMusic.model.Artists;
-import br.inatel.icc.goMusic.model.Tracks;
+import br.inatel.icc.goMusic.domain.Artists;
+import br.inatel.icc.goMusic.domain.Tracks;
 
 public interface APIService {
 
