@@ -32,7 +32,7 @@ public class Playlist {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<Like> likes = new ArrayList<>();
 
-	@OneToMany(mappedBy = "songId")
+	@OneToMany(mappedBy = "playlist")
 	private List<Songs> songs = new ArrayList<>();
 
 	public Playlist() {

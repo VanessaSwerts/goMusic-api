@@ -14,7 +14,8 @@ public class PlaylistDto {
 	private String avatar;
 	private int totalLikes;
 	private UserDto owner;
-	private List<SongsDto> songs;
+//	private List<SongsDto> songs;
+	private int totalSongs;
 
 	public PlaylistDto(Playlist playlist) {
 		this.id = playlist.getId();
@@ -22,10 +23,11 @@ public class PlaylistDto {
 		this.description = playlist.getDescription();
 		this.avatar = playlist.getAvatar();
 		this.totalLikes = playlist.getLikes().size();
-		this.owner = new UserDto(playlist.getOwner());	
-		this.songs = new ArrayList<>();
-		
-		this.songs = playlist.getSongs().stream().map(SongsDto::new).collect(Collectors.toList());
+		this.owner = new UserDto(playlist.getOwner());
+
+//		this.songs = new ArrayList<>();		
+//		this.songs = SongsDto.convertToDtoList(playlist.getSongs());
+		this.totalSongs = playlist.getSongs().size();
 	}
 
 	public Long getId() {
@@ -56,8 +58,11 @@ public class PlaylistDto {
 		return this.owner.getId() == id;
 	}
 
-	public List<SongsDto> getSongs() {
-		return songs;
+//	public List<SongsDto> getSongs() {
+//		return songs;
+//	}
+	public int getTotalSongs() {
+		return totalSongs;
 	}
 
 	public static List<PlaylistDto> convertToDtoList(List<Playlist> playlists) {

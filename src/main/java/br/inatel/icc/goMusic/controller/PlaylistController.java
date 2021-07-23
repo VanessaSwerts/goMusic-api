@@ -10,7 +10,6 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,11 +33,13 @@ import br.inatel.icc.goMusic.controller.form.PlaylistFormUpdate;
 import br.inatel.icc.goMusic.controller.form.SearchForm;
 import br.inatel.icc.goMusic.model.Like;
 import br.inatel.icc.goMusic.model.Playlist;
+import br.inatel.icc.goMusic.model.PlaylistSongs;
 import br.inatel.icc.goMusic.model.Songs;
 import br.inatel.icc.goMusic.model.Tracks;
 import br.inatel.icc.goMusic.model.User;
 import br.inatel.icc.goMusic.repository.LikeRepository;
 import br.inatel.icc.goMusic.repository.PlaylistRepository;
+import br.inatel.icc.goMusic.repository.PlaylistSongsRepository;
 import br.inatel.icc.goMusic.repository.SongsRepository;
 import br.inatel.icc.goMusic.repository.UserRepository;
 
@@ -50,24 +51,26 @@ public class PlaylistController {
 	private UserRepository userRepository;
 	private LikeRepository likeRepository;
 	private SongsRepository songsrepository;
+	private PlaylistSongsRepository playlistSongsRepository;
 
 	private CloudinaryService cloudinaryService;
 	private APIServiceConfigs apiService;
 
 	@Autowired
 	public PlaylistController(PlaylistRepository playlistRepository, UserRepository userRepository,
-			LikeRepository likeRepository, CloudinaryService cloudinaryService, APIServiceConfigs apiService, SongsRepository songsrepository) {
+			LikeRepository likeRepository, CloudinaryService cloudinaryService, APIServiceConfigs apiService,
+			SongsRepository songsrepository, PlaylistSongsRepository playlistSongsRepository) {
 		this.playlistRepository = playlistRepository;
 		this.userRepository = userRepository;
 		this.likeRepository = likeRepository;
 		this.cloudinaryService = cloudinaryService;
 		this.apiService = apiService;
 		this.songsrepository = songsrepository;
+		this.playlistSongsRepository = playlistSongsRepository;
 	}
 
 	@PostMapping
 	@Transactional
-	@CacheEvict(value = "userCreatedPlaylists", allEntries = true)
 	public ResponseEntity<PlaylistDto> create(Authentication authentication, @RequestBody @Valid PlaylistForm form,
 			UriComponentsBuilder uriBuilder) {
 
@@ -101,7 +104,6 @@ public class PlaylistController {
 
 	@PutMapping("/{id}")
 	@Transactional
-	@CacheEvict(value = "userCreatedPlaylists", allEntries = true)
 	public ResponseEntity<PlaylistDto> update(Authentication authentication, @PathVariable("id") Long id,
 			@RequestBody @Valid PlaylistFormUpdate form) {
 
@@ -126,7 +128,6 @@ public class PlaylistController {
 	@SuppressWarnings("rawtypes")
 	@PutMapping("/{id}/avatar")
 	@Transactional
-	@CacheEvict(value = "userCreatedPlaylists", allEntries = true)
 	public ResponseEntity<PlaylistDto> updateAvatar(Authentication authentication, @PathVariable("id") Long id,
 			@RequestParam("file") MultipartFile file) throws IOException {
 		User authenticatedUser = (User) authentication.getPrincipal();
@@ -152,7 +153,6 @@ public class PlaylistController {
 
 	@DeleteMapping("/{id}")
 	@Transactional
-	@CacheEvict(value = "userCreatedPlaylists", allEntries = true)
 	public ResponseEntity<?> delete(Authentication authentication, @PathVariable("id") Long id) {
 
 		User authenticatedUser = (User) authentication.getPrincipal();
@@ -180,7 +180,6 @@ public class PlaylistController {
 		Optional<Playlist> optionalPlaylist = playlistRepository.findById(id);
 
 		if (optionalPlaylist.isPresent()) {
-			System.out.println(optionalPlaylist.get().getLikes());
 
 			List<UserDto> likesList = UserDto.convertToDtoList(optionalPlaylist.get().getLikes());
 			return ResponseEntity.ok(likesList);
@@ -259,11 +258,8 @@ public class PlaylistController {
 			Songs newSong = form.convertToSong(tracks.getData().get(0), currentPlaylist);
 			songsrepository.save(newSong);
 			
-			List<Songs> songsList = currentPlaylist.getSongs();
-			songsList.add(newSong);
-
-			currentPlaylist.setSongs(songsList);
-			System.out.println(songsList.size());
+			PlaylistSongs playlistSongs = new PlaylistSongs(currentPlaylist, newSong);
+			playlistSongsRepository.save(playlistSongs);
 
 			return ResponseEntity.ok(new PlaylistDto(currentPlaylist));
 

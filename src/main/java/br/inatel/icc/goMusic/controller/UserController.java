@@ -10,7 +10,6 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -224,7 +223,6 @@ public class UserController {
 	}
 
 	@GetMapping("/{id}/playlistsCreated")
-	@Cacheable(value = "userCreatedPlaylists")
 	public ResponseEntity<List<PlaylistDto>> listUserPlaylistsCreated(@PathVariable("id") Long id) {
 		Optional<User> optionalUser = userRepository.findById(id);
 
