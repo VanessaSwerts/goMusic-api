@@ -3,6 +3,8 @@ package br.inatel.icc.goMusic.controller.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+
 import br.inatel.icc.goMusic.model.User;
 
 public class UserDto {
@@ -14,6 +16,9 @@ public class UserDto {
 
 	private int totalFollowers;
 	private int totalFollowings;
+	private int totalPlaylists;
+	private int totalCreatedPlaylists;
+
 	private int totalLikedPlaylists;
 
 	public UserDto(User user) {
@@ -23,6 +28,8 @@ public class UserDto {
 		this.country = user.getCountry();
 		this.totalFollowers = user.getFollowers().size();
 		this.totalFollowings = user.getFollowings().size();
+		this.totalPlaylists = user.getPlaylists().size() + user.getLikedPlaylists().size();
+		this.totalCreatedPlaylists = user.getPlaylists().size();
 		this.totalLikedPlaylists = user.getLikedPlaylists().size();
 	}
 
@@ -38,10 +45,6 @@ public class UserDto {
 		return avatar;
 	}
 
-	public int getTotalLikedPlaylists() {
-		return totalLikedPlaylists;
-	}
-
 	public String getCountry() {
 		return country;
 	}
@@ -53,9 +56,26 @@ public class UserDto {
 	public int getTotalFollowings() {
 		return totalFollowings;
 	}
-	
-	public static List<UserDto> convertToDtoList(List<User> users){
+
+	public int getTotalPlaylists() {
+		return totalPlaylists;
+	}
+
+	public int getTotalCreatedPlaylists() {
+		return totalCreatedPlaylists;
+	}
+
+	public int getTotalLikedPlaylists() {
+		return totalLikedPlaylists;
+	}
+
+	public static List<UserDto> convertToDtoList(List<User> users) {
 		List<UserDto> usersDto = users.stream().map(UserDto::new).collect(Collectors.toList());
+		return usersDto;
+	}
+
+	public static Page<UserDto> convertToDtoPage(Page<User> users) {
+		Page<UserDto> usersDto = users.map(UserDto::new);
 		return usersDto;
 	}
 

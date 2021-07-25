@@ -9,4 +9,5 @@ import br.inatel.icc.goMusic.model.User;
 public interface UserRepository extends JpaRepository<User, Long> {
 
 	Optional<User> findByEmail(String email);
+
 }

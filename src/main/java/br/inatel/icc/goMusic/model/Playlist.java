@@ -32,7 +32,8 @@ public class Playlist {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<Like> likes = new ArrayList<>();
 
-	@OneToMany(mappedBy = "playlist")
+	@OneToMany(mappedBy = "playlist", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<Songs> songs = new ArrayList<>();
 
 	public Playlist() {

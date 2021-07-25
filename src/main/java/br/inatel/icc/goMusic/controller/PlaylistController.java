@@ -10,6 +10,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -190,6 +191,7 @@ public class PlaylistController {
 
 	@PutMapping("/liked/{id}")
 	@Transactional
+	@CacheEvict(value = "userPlaylistsLiked", allEntries = true)
 	public ResponseEntity<?> addLike(Authentication authentication, @PathVariable("id") Long id) {
 
 		User authenticatedUser = (User) authentication.getPrincipal();
@@ -198,10 +200,11 @@ public class PlaylistController {
 		Optional<Playlist> optionalPlaylistToLike = playlistRepository.findById(id);
 
 		if (optionalPlaylistToLike.isPresent()) {
+
 			Optional<Like> isLiked = likeRepository.findByPlaylistAndUser(optionalPlaylistToLike.get(), userLogged);
 
-			if (isLiked.isPresent()) {
-				return ResponseEntity.status(202).build();
+			if (isLiked.isPresent() || authenticatedUser.getId() == optionalPlaylistToLike.get().getOwner().getId()) {
+				return ResponseEntity.status(403).build();
 			}
 
 			Like newLike = new Like(optionalPlaylistToLike.get(), userLogged);
@@ -215,6 +218,7 @@ public class PlaylistController {
 
 	@DeleteMapping("/unliked/{id}")
 	@Transactional
+	@CacheEvict(value = "userPlaylistsLiked", allEntries = true)
 	public ResponseEntity<?> removeLike(Authentication authentication, @PathVariable("id") Long id) {
 		User authenticatedUser = (User) authentication.getPrincipal();
 		User userLogged = userRepository.getById(authenticatedUser.getId());
@@ -238,6 +242,7 @@ public class PlaylistController {
 
 	@PostMapping("/{id}/songs")
 	@Transactional
+	@CacheEvict(value = "userPlaylistsLiked", allEntries = true)
 	public ResponseEntity<PlaylistDto> addSong(Authentication authentication, @RequestBody @Valid SearchForm form,
 			@PathVariable("id") Long id) throws Exception {
 
@@ -255,6 +260,15 @@ public class PlaylistController {
 
 			Tracks tracks = apiService.searchTrack(form.getTitle());
 
+			Optional<Songs> alreadyExists = songsrepository.findBySongId(tracks.getData().get(0).getId());
+
+			if (alreadyExists.isPresent()) {
+				PlaylistSongs playlistSongs = new PlaylistSongs(currentPlaylist, alreadyExists.get());
+				playlistSongsRepository.save(playlistSongs);
+
+				return ResponseEntity.ok(new PlaylistDto(currentPlaylist));
+			}
+
 			Songs newSong = form.convertToSong(tracks.getData().get(0), currentPlaylist);
 			songsrepository.save(newSong);
 
@@ -270,6 +284,7 @@ public class PlaylistController {
 
 	@DeleteMapping("/{id}/songs/{songId}")
 	@Transactional
+	@CacheEvict(value = "userPlaylistsLiked", allEntries = true)
 	public ResponseEntity<?> removeSong(Authentication authentication, @PathVariable("id") Long id,
 			@PathVariable("songId") Long songId) {
 		User authenticatedUser = (User) authentication.getPrincipal();
@@ -292,6 +307,7 @@ public class PlaylistController {
 			}
 
 			playlistSongsRepository.deleteById(songExistsInPlaylist.get().getId());
+			songsrepository.deleteById(songId);
 
 			return ResponseEntity.ok().build();
 		}
