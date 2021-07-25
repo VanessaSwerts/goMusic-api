@@ -12,97 +12,98 @@
 	goMusic API - em desenvolvimento 
 </h4>
 
-## 💻 Sobre 
+-----
 
-goMusic API 
+<p align="center">
+ <a href="#-about">About</a> •
+ <a href="#-features">Features</a> • 
+ <a href="#-setup">Setup</a> • 
+ <a href="#-technologies">Technologies</a> • 
+ <a href="#-author">Author</a> • 
+ <a href="#user-content--licença">License</a>
+</p>
 
 -----
 
-## ✍️  API Requirements 
+## 💻 About 
 
-### Must to have
-- [ ] Comunicar com uma API externa (desenvolvida pelo colaborador ou por terceiros).
-- [x] Persistir dados num BD relacional (não relacional é "nice to have").
-- [ ] Apresentar alguns testes unitários e funcionais.
-
-### Nice to have
-- [ ] Organização do código.
-- [ ] Logging.
-- [x] Segurança (ex: JWT).
-- [ ] Cache.
+ The goMusic API contains the features of a basic music streaming platform. The project is developed using Spring Boot and connected to an external API, [Deezer Api](https://developers.deezer.com/api), to access music and artist data.
 
 -----
 
 ## 📚 Features
 
-  <table border="0" width="100%"
-  >
-  <tr>
-
-  <td width="30%" valign="top" border="0">
-
-  ## User
-  - [x] CREATE
-  - [x] LIST
-  - [x] UPDATE
-  - [x] DELETE
-
-  </td>
-  <td width="30%" valign="top">
-
-  ## Follow
-  - [x] CREATE
-  - [x] LIST
-  - [x] DELETE
-
-  </td>
-  <td width="30%" valign="top">
-
-  ## Playlist
-  - [x] CREATE
-  - [x] LIST
-  - [x] UPDATE
-  - [x] DELETE
-  </td>
-
-  </td>
-
-</tr>
-</table>
+  - User:
+	  - [x] Create 
+	  - [x] Login
+	  - [x] Update
+	  - [x] Update Avatar
+	  - [x] Delete
+	  - [x] List by Id
+	  - [x] List all playlists
+	  - [x] List playlists created
+	  - [x] List playlists liked	  
+  
+  - Follow:
+	  - [x] Follow user 
+	  - [x] Unfollow user
+	  - [x] List followers
+	  - [x] List followings
+ 
+ - Playlist:
+	  - [x] Create 
+	  - [x] Add song
+	  - [x] Remove song  
+	  - [x] Update
+	  - [x] Update Avatar
+	  - [x] Delete
+	  - [x] List by Id 
+ 
+ -  Like:
+	  - [x] Like playlist 
+	  - [x] Unlike playlist
+	  - [x] List likes
+ 
+ -  Songs:
+	  - [x] List all 
+	  - [x] List by Id
+---
 
 -----
 
-## 🚀 Como executar o projeto
+## 🚀 Setup
 
 1. Download [Java Eclipse IDE](https://www.eclipse.org/downloads/)
-2. Clone este repositório: git clone https://github.com/VanessaSwerts/goMusic-api.git
-3. Abra o projeto no Eclipse IDE
-5. Rode o projeto e acesse http://localhost:8080
+2. Clone this repository: ``git clone https://github.com/VanessaSwerts/goMusic-api.git``
+3. Open the app on Eclipse IDE
+5. Run the project and access http://localhost:8080
 
 -----
 
-## 🛠 Tecnologias
+## 🛠 Technologies
 
 #### **API**  ([Spring Boot](https://spring.io/projects/spring-boot))
 
 - **Dependências**:
   -   **[spring-boot-starter-web](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web)**
-  -   **[spring-boot-starter-test](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test)**
-  -   **[spring-boot-devtools](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools)**
   -   **[spring-boot-starter-data-jpa](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa)**
-  -   **[h2](https://mvnrepository.com/artifact/com.h2database/h2)**
-  -   **[spring-boot-starter-validation](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation)**
   -   **[spring-boot-starter-cache](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-cache)**
   -   **[spring-boot-starter-security](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security)**
+  -   **[h2](https://mvnrepository.com/artifact/com.h2database/h2)**
   -   **[jjwt](https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt)**
-  -   **[springfox-swagger2](https://mvnrepository.com/artifact/io.springfox/springfox-swagger2)**
-  -   **[springfox-swagger-ui](https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui)**  
-  -   **[spring-boot-starter-actuator](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator)**
+  -   **[spring-boot-devtools](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools)**
+  -   **[spring-boot-starter-test](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test)**
+  -   **[spring-boot-starter-validation](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation)**
+  -   **[postgresql](https://mvnrepository.com/artifact/org.postgresql/postgresql)**
+  -   **[cloudinary-http44](https://mvnrepository.com/artifact/com.cloudinary/cloudinary-http44)**
   -   **[spring-boot-admin-starter-client](https://mvnrepository.com/artifact/de.codecentric/spring-boot-admin-starter-client)**
+  -   **[spring-boot-starter-actuator](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator)**
+  -   **[springfox-swagger2](https://mvnrepository.com/artifact/io.springfox/springfox-swagger2)**
+  -   **[springfox-swagger-ui](https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui)**
 
 ---
 
-## 🦸 Autora
+## 🦸 Author
 
 <table>
   <tr>   
@@ -112,7 +113,7 @@ goMusic API
 
 ---
 
-## 📝 Licença
+## 📝 License
 
 Este projeto esta sobe a licença [MIT](./LICENSE).
 
