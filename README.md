@@ -67,6 +67,8 @@
  -  Songs:
 	  - [x] List all 
 	  - [x] List by Id
+
+To access Api Documentation (Swagger-Ui): Run the project and access http://localhost:8080/swagger-ui.html
 ---
 
 ## 🚀 Setup
