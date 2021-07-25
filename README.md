@@ -12,7 +12,7 @@
 	goMusic API - em desenvolvimento 
 </h4>
 
------
+---
 
 <p align="center">
  <a href="#-about">About</a> •
@@ -20,16 +20,16 @@
  <a href="#-setup">Setup</a> • 
  <a href="#-technologies">Technologies</a> • 
  <a href="#-author">Author</a> • 
- <a href="#user-content--licença">License</a>
+ <a href="#user-content--license">License</a>
 </p>
 
------
+---
 
 ## 💻 About 
 
  The goMusic API contains the features of a basic music streaming platform. The project is developed using Spring Boot and connected to an external API, [Deezer Api](https://developers.deezer.com/api), to access music and artist data.
 
------
+---
 
 ## 📚 Features
 
@@ -69,8 +69,6 @@
 	  - [x] List by Id
 ---
 
------
-
 ## 🚀 Setup
 
 1. Download [Java Eclipse IDE](https://www.eclipse.org/downloads/)
@@ -78,7 +76,7 @@
 3. Open the app on Eclipse IDE
 5. Run the project and access http://localhost:8080
 
------
+---
 
 ## 🛠 Technologies
 
