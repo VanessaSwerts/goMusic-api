@@ -98,6 +98,10 @@ public class User implements UserDetails {
 		this.country = country;
 	}
 
+	public void setMyPlaylists(List<Playlist> myPlaylists) {
+		this.myPlaylists = myPlaylists;
+	}
+
 	public List<User> getFollowers() {
 		List<User> users = new ArrayList<>();
 
@@ -149,7 +153,7 @@ public class User implements UserDetails {
 		return serialVersionUID;
 	}
 
-	public List<Playlist> getPlaylists() {
+	public List<Playlist> getMyPlaylists() {
 		return myPlaylists;
 	}
 

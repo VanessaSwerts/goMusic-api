@@ -16,9 +16,9 @@ public class UserDto {
 
 	private int totalFollowers;
 	private int totalFollowings;
+	
 	private int totalPlaylists;
 	private int totalCreatedPlaylists;
-
 	private int totalLikedPlaylists;
 
 	public UserDto(User user) {
@@ -28,8 +28,8 @@ public class UserDto {
 		this.country = user.getCountry();
 		this.totalFollowers = user.getFollowers().size();
 		this.totalFollowings = user.getFollowings().size();
-		this.totalPlaylists = user.getPlaylists().size() + user.getLikedPlaylists().size();
-		this.totalCreatedPlaylists = user.getPlaylists().size();
+		this.totalPlaylists = user.getMyPlaylists().size() + user.getLikedPlaylists().size();
+		this.totalCreatedPlaylists = user.getMyPlaylists().size();
 		this.totalLikedPlaylists = user.getLikedPlaylists().size();
 	}
 
