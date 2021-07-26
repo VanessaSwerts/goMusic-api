@@ -20,7 +20,7 @@ public class SwaggerConfigs {
 	public Docket forumApi() {
 		return new Docket(DocumentationType.SWAGGER_2)
 				.select()
-				.apis(RequestHandlerSelectors.basePackage("br.com.icc.goMusic"))
+				.apis(RequestHandlerSelectors.basePackage("br.inatel.icc.goMusic"))
 				.paths(PathSelectors.ant("/**"))
 				.build()
 				.ignoredParameterTypes(User.class)
