@@ -228,7 +228,7 @@ public class PlaylistController {
 		if (optionalPlaylistToUnliked.isPresent()) {
 			Optional<Like> isLiked = likeRepository.findByPlaylistAndUser(optionalPlaylistToUnliked.get(), userLogged);
 
-			if (isLiked.isEmpty()) {
+			if (!isLiked.isPresent()) {
 				return ResponseEntity.status(403).build();
 			}
 
@@ -302,7 +302,7 @@ public class PlaylistController {
 			Optional<PlaylistSongs> songExistsInPlaylist = playlistSongsRepository
 					.findByPlaylistAndSongs(optionalPlaylist.get(), optionalSong.get());
 
-			if (songExistsInPlaylist.isEmpty()) {
+			if (!songExistsInPlaylist.isPresent()) {
 				return ResponseEntity.status(403).build();
 			}
 

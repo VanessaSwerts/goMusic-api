@@ -198,7 +198,7 @@ public class UserController {
 			Optional<Follow> isFollowing = followRepository.findByFollowingAndFollower(userLogged,
 					userToUnfollow.get());
 
-			if (isFollowing.isEmpty()) {
+			if (!isFollowing.isPresent()) {
 				return ResponseEntity.status(403).build();
 			}
 
@@ -215,7 +215,7 @@ public class UserController {
 		Optional<User> optionalUser = userRepository.findById(id);
 
 		if (optionalUser.isPresent()) {
-			List<PlaylistDto> playlists = PlaylistDto.concatTwoDtoList(optionalUser.get().getPlaylists(),
+			List<PlaylistDto> playlists = PlaylistDto.concatTwoDtoList(optionalUser.get().getMyPlaylists(),
 					optionalUser.get().getLikedPlaylists());
 			return ResponseEntity.ok().body(playlists);
 		}
@@ -228,7 +228,7 @@ public class UserController {
 		Optional<User> optionalUser = userRepository.findById(id);
 
 		if (optionalUser.isPresent()) {
-			List<PlaylistDto> playlistsCreated = PlaylistDto.convertToDtoList(optionalUser.get().getPlaylists());
+			List<PlaylistDto> playlistsCreated = PlaylistDto.convertToDtoList(optionalUser.get().getMyPlaylists());
 			return ResponseEntity.ok().body(playlistsCreated);
 		}
 
