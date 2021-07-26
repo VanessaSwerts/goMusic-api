@@ -46,7 +46,7 @@ public class FollowRepositoryTest {
 	public void shouldNotFindByFollowingAndFollower() {
 		Optional<Follow> isFollowing = followRepository.findByFollowingAndFollower(firstUser, secondUser);
 
-		Assert.assertTrue(isFollowing.isEmpty());
+		Assert.assertFalse(isFollowing.isPresent());
 	}
 
 }

@@ -34,7 +34,7 @@ class UserRepositoryTest {
 		String wrongEmail = "anasilva@email.com.br";
 		Optional<User> user = userRepository.findByEmail(wrongEmail);
 
-		Assert.assertTrue(user.isEmpty());
+		Assert.assertFalse(user.isPresent());
 	}
 
 }
