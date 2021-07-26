@@ -1,4 +1,6 @@
 <p align="center">
+  <img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/vanessaswerts/goMusic-api/goMusicTests">
+  
   <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/vanessaswerts/goMusic-api">
 
   <img alt="Repository size" src="https://img.shields.io/github/repo-size/vanessaswerts/goMusic-api">
