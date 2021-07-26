@@ -29,7 +29,7 @@ class PlaylistDtoTest {
 	}
 
 	@Test
-	void verifyPlaylistDtoInfosAfterCreate() {
+	public void verifyPlaylistDtoInfosAfterCreate() {
 		this.playlistDto = new PlaylistDto(newPlaylist);
 
 		Assert.assertEquals("My first playlist", playlistDto.getTitle());
@@ -40,7 +40,7 @@ class PlaylistDtoTest {
 	}
 
 	@Test
-	void verifyPlaylistTotalLikes() {
+	public void verifyPlaylistTotalLikes() {
 		List<Like> likes = new ArrayList<>();
 		likes.add(newLike);
 		newPlaylist.setLikes(likes);

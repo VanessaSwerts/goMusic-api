@@ -31,7 +31,7 @@ class UserDtoTest {
 	}
 
 	@Test
-	void verifyUserDtoInfosAfterCreate() {
+	public void verifyUserDtoInfosAfterCreate() {
 		this.userDto = new UserDto(firstUser);
 
 		Assert.assertEquals("Ana Silva", userDto.getName());
@@ -44,7 +44,7 @@ class UserDtoTest {
 	}
 
 	@Test
-	void verifyUserTotalFollowings() {
+	public void verifyUserTotalFollowings() {
 		List<Follow> followings = new ArrayList<>();
 
 		followings.add(new Follow(firstUser, secondUser));
@@ -56,7 +56,7 @@ class UserDtoTest {
 	}
 
 	@Test
-	void verifyUserTotalFollowers() {
+	public void verifyUserTotalFollowers() {
 		List<Follow> followers = new ArrayList<>();
 
 		followers.add(new Follow(secondUser, firstUser));
@@ -68,7 +68,7 @@ class UserDtoTest {
 	}
 
 	@Test
-	void verifyUserTotalPlaylistsCreated() {
+	public void verifyUserTotalPlaylistsCreated() {
 		List<Playlist> playlists = new ArrayList<>();
 
 		playlists.add(newPlaylist);
@@ -80,7 +80,7 @@ class UserDtoTest {
 	}
 
 	@Test
-	void verifyUserTotalPlaylistsLiked() {
+	public void verifyUserTotalPlaylistsLiked() {
 		List<Playlist> playlists = new ArrayList<>();
 
 		playlists.add(newPlaylist);
