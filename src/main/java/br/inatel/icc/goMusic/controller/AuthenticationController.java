@@ -43,7 +43,6 @@ public class AuthenticationController {
 		} catch (AuthenticationException e) {
 			return ResponseEntity.status(400).build();
 		}
-
 	}
 
 }

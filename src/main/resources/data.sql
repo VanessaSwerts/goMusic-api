@@ -11,7 +11,7 @@ INSERT INTO PLAYLIST(title, description, avatar, owner_id) VALUES('Love Ballads'
 
 INSERT INTO FOLLOW (follower_id, following_id) VALUES (1, 2);
 INSERT INTO FOLLOW (follower_id, following_id) VALUES (1, 3);
-INSERT INTO FOLLOW (follower_id, following_id) VALUES (2, 1);
+INSERT INTO FOLLOW (follower_id, following_id) VALUES (3, 1);
 INSERT INTO FOLLOW (follower_id, following_id) VALUES (3, 4);
 INSERT INTO FOLLOW (follower_id, following_id) VALUES (4, 2);
 INSERT INTO FOLLOW (follower_id, following_id) VALUES (4, 3);
