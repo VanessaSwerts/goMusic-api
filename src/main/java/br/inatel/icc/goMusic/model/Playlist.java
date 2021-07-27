@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -32,9 +33,8 @@ public class Playlist {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<Like> likes = new ArrayList<>();
 
-	@OneToMany(mappedBy = "playlist", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	private List<Songs> songs = new ArrayList<>();
+	@ElementCollection
+	private List<Integer> songsID = new ArrayList<>();
 
 	public Playlist() {
 	}
@@ -92,12 +92,16 @@ public class Playlist {
 		this.likes = likes;
 	}
 
-	public List<Songs> getSongs() {
-		return songs;
+	public List<Integer> getTracksID() {
+		return songsID;
 	}
 
-	public void setSongs(List<Songs> songs) {
-		this.songs = songs;
+	public void setTracksID(List<Integer> tracksID) {
+		this.songsID = tracksID;
+	}
+	
+	public boolean playlistContainsSong(Integer id) {
+		return songsID.contains(id);
 	}
 
 }

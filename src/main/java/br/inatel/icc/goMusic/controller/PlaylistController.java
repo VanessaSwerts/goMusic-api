@@ -35,13 +35,9 @@ import br.inatel.icc.goMusic.controller.form.SearchForm;
 import br.inatel.icc.goMusic.domain.Tracks;
 import br.inatel.icc.goMusic.model.Like;
 import br.inatel.icc.goMusic.model.Playlist;
-import br.inatel.icc.goMusic.model.PlaylistSongs;
-import br.inatel.icc.goMusic.model.Songs;
 import br.inatel.icc.goMusic.model.User;
 import br.inatel.icc.goMusic.repository.LikeRepository;
 import br.inatel.icc.goMusic.repository.PlaylistRepository;
-import br.inatel.icc.goMusic.repository.PlaylistSongsRepository;
-import br.inatel.icc.goMusic.repository.SongsRepository;
 import br.inatel.icc.goMusic.repository.UserRepository;
 
 @RestController
@@ -51,23 +47,18 @@ public class PlaylistController {
 	private PlaylistRepository playlistRepository;
 	private UserRepository userRepository;
 	private LikeRepository likeRepository;
-	private SongsRepository songsrepository;
-	private PlaylistSongsRepository playlistSongsRepository;
 
 	private CloudinaryService cloudinaryService;
 	private APIServiceConfigs apiService;
 
 	@Autowired
 	public PlaylistController(PlaylistRepository playlistRepository, UserRepository userRepository,
-			LikeRepository likeRepository, CloudinaryService cloudinaryService, APIServiceConfigs apiService,
-			SongsRepository songsrepository, PlaylistSongsRepository playlistSongsRepository) {
+			LikeRepository likeRepository, CloudinaryService cloudinaryService, APIServiceConfigs apiService) {
 		this.playlistRepository = playlistRepository;
 		this.userRepository = userRepository;
 		this.likeRepository = likeRepository;
 		this.cloudinaryService = cloudinaryService;
 		this.apiService = apiService;
-		this.songsrepository = songsrepository;
-		this.playlistSongsRepository = playlistSongsRepository;
 	}
 
 	@PostMapping
@@ -286,23 +277,15 @@ public class PlaylistController {
 				return ResponseEntity.notFound().build();
 			}
 
-			Optional<Songs> alreadyExists = songsrepository.findBySongId(tracks.getData().get(0).getId());
-
-			if (alreadyExists.isPresent()) {
-				PlaylistSongs playlistSongs = new PlaylistSongs(currentPlaylist, alreadyExists.get());
-				playlistSongsRepository.save(playlistSongs);
-
-				return ResponseEntity.ok(new PlaylistDto(currentPlaylist));
+			if (currentPlaylist.playlistContainsSong(tracks.getData().get(0).getId())) {
+				return ResponseEntity.status(403).build();
 			}
 
-			Songs newSong = form.convertToSong(tracks.getData().get(0), currentPlaylist);
-			songsrepository.save(newSong);
-
-			PlaylistSongs playlistSongs = new PlaylistSongs(currentPlaylist, newSong);
-			playlistSongsRepository.save(playlistSongs);
+			List<Integer> newTracks = currentPlaylist.getTracksID();
+			newTracks.add(tracks.getData().get(0).getId());
+			currentPlaylist.setTracksID(newTracks);
 
 			return ResponseEntity.ok(new PlaylistDto(currentPlaylist));
-
 		}
 
 		return ResponseEntity.notFound().build();
@@ -312,28 +295,21 @@ public class PlaylistController {
 	@Transactional
 	@CacheEvict(value = "userPlaylistsLiked", allEntries = true)
 	public ResponseEntity<?> removeSong(Authentication authentication, @PathVariable("id") Long id,
-			@PathVariable("songId") Long songId) {
+			@PathVariable("songId") Integer songId) {
 		User authenticatedUser = (User) authentication.getPrincipal();
 		Long authenticatedUserId = authenticatedUser.getId();
 
 		Optional<Playlist> optionalPlaylist = playlistRepository.findById(id);
-		Optional<Songs> optionalSong = songsrepository.findById(songId);
 
-		if (optionalPlaylist.isPresent() && optionalSong.isPresent()) {
+		if (optionalPlaylist.isPresent() && optionalPlaylist.get().playlistContainsSong(songId)) {
 
 			if (authenticatedUserId != optionalPlaylist.get().getOwner().getId()) {
 				return ResponseEntity.status(403).build();
 			}
 
-			Optional<PlaylistSongs> songExistsInPlaylist = playlistSongsRepository
-					.findByPlaylistAndSongs(optionalPlaylist.get(), optionalSong.get());
-
-			if (!songExistsInPlaylist.isPresent()) {
-				return ResponseEntity.status(403).build();
-			}
-
-			playlistSongsRepository.deleteById(songExistsInPlaylist.get().getId());
-			songsrepository.deleteById(songId);
+			List<Integer> newTracks = optionalPlaylist.get().getTracksID();
+			newTracks.remove(songId);
+			optionalPlaylist.get().setTracksID(newTracks);
 
 			return ResponseEntity.ok().build();
 		}

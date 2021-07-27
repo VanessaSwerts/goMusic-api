@@ -26,8 +26,8 @@ public class PlaylistDto {
 		this.owner = new UserDto(playlist.getOwner());
 
 		this.songs = new ArrayList<>();
-		this.songs = SongsDto.convertToDtoList(playlist.getSongs());
-		this.totalSongs = playlist.getSongs().size();
+		this.songs = SongsDto.requestTracks(playlist.getTracksID());
+		this.totalSongs = playlist.getTracksID().size();
 	}
 
 	public Long getId() {

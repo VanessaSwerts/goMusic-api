@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import br.inatel.icc.goMusic.domain.Artists;
+import br.inatel.icc.goMusic.domain.Track;
 import br.inatel.icc.goMusic.domain.Tracks;
 import br.inatel.icc.goMusic.util.UrlConfigs;
 
@@ -29,5 +30,11 @@ public class APIServiceConfigs {
 
         return restTemplate.getForObject(urlQuery, Tracks.class);		
 	}
+	
+	public Track getTrackById(Integer userInput) throws Exception {
+        String urlQuery = UrlConfigs.buildTrackByIdQuery(userInput);
+        
+        return restTemplate.getForObject(urlQuery, Track.class);
+    }
 
 }

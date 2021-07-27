@@ -3,7 +3,7 @@ package br.inatel.icc.goMusic.controller.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import br.inatel.icc.goMusic.model.Songs;
+import br.inatel.icc.goMusic.domain.Track;
 import br.inatel.icc.goMusic.util.FormatData;
 
 public class SongsDto {
@@ -15,13 +15,13 @@ public class SongsDto {
 	private String album;
 	private String artist;
 
-	public SongsDto(Songs song) {
-		this.songId = song.getSongId();
+	public SongsDto(Track song) {
+		this.songId = song.getId();
 		this.title = song.getTitle();
 		this.duration = FormatData.formatDuration(song.getDuration());
-		this.url = song.getUrl();
-		this.album = song.getAlbum();
-		this.artist = song.getArtist();
+		this.url = song.getLink();
+		this.album = song.getAlbum().getTitle();
+		this.artist = song.getArtist().getName();
 	}
 
 	public Integer getSongId() {
@@ -48,9 +48,16 @@ public class SongsDto {
 		return artist;
 	}
 
-	public static List<SongsDto> convertToDtoList(List<Songs> songs) {
-		List<SongsDto> songsDto = songs.stream().map(SongsDto::new).collect(Collectors.toList());
+	public static List<SongsDto> convertToDtoList(List<Track> tracks) {
+		List<SongsDto> songsDto = tracks.stream().map(SongsDto::new).collect(Collectors.toList());
 		return songsDto;
+	}
+
+	public static List<SongsDto> requestTracks(List<Integer> tracksId) {
+		Track track = new Track();
+		List<Track> tracks = track.requestTrackById(tracksId);
+
+		return convertToDtoList(tracks);
 	}
 
 }
