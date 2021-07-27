@@ -30,12 +30,14 @@
 ## 💻 About 
 
  The goMusic API contains the features of a basic music streaming platform. The project is developed using Spring Boot and connected to an external API, [Deezer Api](https://developers.deezer.com/api), to access music and artist data.
+ 
+ Deploy on [Heroku](https://gomusic-api.herokuapp.com/) 
 
 ---
 
 ## 📚 Features
 	
-To access Api Documentation (Swagger-Ui): Run the project and access http://localhost:8080/swagger-ui.html
+To access [Api Documentation (Swagger-Ui)](https://gomusic-api.herokuapp.com/swagger-ui.html)
 
   - User:
 	  - [x] Create 
