@@ -37,7 +37,7 @@
 
 ## 📚 Features
 	
-To access Api Documentation (Swagger-Ui): Run the project and access https://gomusic-api.herokuapp.com/swagger-ui.html
+To access [Api Documentation (Swagger-Ui)](https://gomusic-api.herokuapp.com/swagger-ui.html)
 
   - User:
 	  - [x] Create 
