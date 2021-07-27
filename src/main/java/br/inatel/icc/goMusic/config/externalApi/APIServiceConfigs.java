@@ -9,7 +9,7 @@ import br.inatel.icc.goMusic.domain.Tracks;
 import br.inatel.icc.goMusic.util.UrlConfigs;
 
 @Service("apiService")
-public class APIServiceConfigs implements APIService {
+public class APIServiceConfigs {
 
 	private RestTemplate restTemplate;
 	
@@ -18,14 +18,12 @@ public class APIServiceConfigs implements APIService {
 		this.restTemplate = new RestTemplate();
 	}
 	
-	@Override
     public Artists searchArtist(String userInput) throws Exception {
         String urlQuery = UrlConfigs.buildArtistSearchQuery(userInput);
         
         return restTemplate.getForObject(urlQuery, Artists.class);
     }
 
-	@Override
 	public Tracks searchTrack(String userInput) throws Exception {
 		String urlQuery = UrlConfigs.buildTrackSearchQuery(userInput);
 
