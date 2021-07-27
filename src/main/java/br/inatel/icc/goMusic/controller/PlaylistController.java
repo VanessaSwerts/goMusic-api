@@ -89,10 +89,32 @@ public class PlaylistController {
 		return ResponseEntity.created(uri).body(new PlaylistDto(newPlaylist));
 	}
 
+	@GetMapping()
+	public ResponseEntity<List<PlaylistDto>> listAll() {
+
+		List<Playlist> playlists = playlistRepository.findAll();
+
+		return ResponseEntity.ok().body(PlaylistDto.convertToDtoList(playlists));
+	}
+
 	@GetMapping("/{id}")
 	public ResponseEntity<PlaylistDto> list(@PathVariable("id") Long id) {
 
 		Optional<Playlist> optionalPlaylist = playlistRepository.findById(id);
+
+		if (optionalPlaylist.isPresent()) {
+			PlaylistDto playlistDto = new PlaylistDto(optionalPlaylist.get());
+
+			return ResponseEntity.ok().body(playlistDto);
+		}
+
+		return ResponseEntity.notFound().build();
+	}
+
+	@GetMapping("/search")
+	public ResponseEntity<PlaylistDto> searchByTitle(@RequestParam(required = true, name = "title") String title) {
+
+		Optional<Playlist> optionalPlaylist = playlistRepository.findByTitle(title);
 
 		if (optionalPlaylist.isPresent()) {
 			PlaylistDto playlistDto = new PlaylistDto(optionalPlaylist.get());
@@ -259,6 +281,10 @@ public class PlaylistController {
 			}
 
 			Tracks tracks = apiService.searchTrack(form.getTitle());
+
+			if (tracks.getTotal() == 0) {
+				return ResponseEntity.notFound().build();
+			}
 
 			Optional<Songs> alreadyExists = songsrepository.findBySongId(tracks.getData().get(0).getId());
 
