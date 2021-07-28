@@ -11,7 +11,7 @@
 </p>
 
 <h4 align="center"> 
-	goMusic API - em desenvolvimento 
+	✅ goMusic API - Done ✅
 </h4>
 
 ---
