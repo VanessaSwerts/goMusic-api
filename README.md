@@ -69,10 +69,6 @@ To access [Api Documentation (Swagger-Ui)](https://gomusic-api.herokuapp.com/swa
 	  - [x] Like playlist 
 	  - [x] Unlike playlist
 	  - [x] List likes
- 
- -  Songs:
-	  - [x] List all 
-	  - [x] List by Id
 
 ---
 
