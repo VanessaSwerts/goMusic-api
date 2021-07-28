@@ -18,11 +18,11 @@ public class UserFormUpdate {
 
 	public User updateUser(User user) {
 		if (name != null)
-			if (!name.isBlank())
+			if (name.length() != 0)
 				user.setName(name);
 
 		if (country != null)
-			if (!country.isBlank())
+			if (country.length() != 0)
 				user.setCountry(country);
 
 		return user;

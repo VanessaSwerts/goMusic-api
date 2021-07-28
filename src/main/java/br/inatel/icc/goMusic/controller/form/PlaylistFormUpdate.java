@@ -18,11 +18,11 @@ public class PlaylistFormUpdate {
 
 	public Playlist updatePlaylist(Playlist playlist) {
 		if (title != null)
-			if (!title.isBlank())
+			if (title.length() != 0)
 				playlist.setTitle(title);
 
 		if (description != null)
-			if (!description.isBlank())
+			if (description.length() != 0)
 				playlist.setDescription(description);
 
 		return playlist;
