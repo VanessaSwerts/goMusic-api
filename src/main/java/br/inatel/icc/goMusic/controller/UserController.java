@@ -227,6 +227,7 @@ public class UserController {
 	}
 
 	@GetMapping("/{id}/playlists")
+	@Cacheable(value = "userPlaylists")
 	public ResponseEntity<List<PlaylistDto>> listUserPlaylists(@PathVariable("id") Long id) {
 		Optional<User> optionalUser = userRepository.findById(id);
 
@@ -255,8 +256,7 @@ public class UserController {
 		return ResponseEntity.status(404).build();
 	}
 
-	@GetMapping("/{id}/playlistsLiked")
-	@Cacheable(value = "userPlaylistsLiked")
+	@GetMapping("/{id}/playlistsLiked")	
 	public ResponseEntity<List<PlaylistDto>> listUserPlaylistsLiked(@PathVariable("id") Long id) {
 		Optional<User> optionalUser = userRepository.findById(id);
 

@@ -116,6 +116,7 @@ public class PlaylistController {
 
 	@PutMapping("/{id}")
 	@Transactional
+	@CacheEvict(value = "userPlaylists", allEntries = true)
 	public ResponseEntity<PlaylistDto> update(Authentication authentication, @PathVariable("id") Long id,
 			@RequestBody @Valid PlaylistFormUpdate form) {
 
@@ -142,6 +143,7 @@ public class PlaylistController {
 	@SuppressWarnings("rawtypes")
 	@PutMapping("/{id}/avatar")
 	@Transactional
+	@CacheEvict(value = "userPlaylists", allEntries = true)
 	public ResponseEntity<PlaylistDto> updateAvatar(Authentication authentication, @PathVariable("id") Long id,
 			@RequestParam("file") MultipartFile file) throws IOException {
 		User authenticatedUser = (User) authentication.getPrincipal();
@@ -168,6 +170,7 @@ public class PlaylistController {
 
 	@DeleteMapping("/{id}")
 	@Transactional
+	@CacheEvict(value = "userPlaylists", allEntries = true)
 	public ResponseEntity<?> delete(Authentication authentication, @PathVariable("id") Long id) {
 
 		User authenticatedUser = (User) authentication.getPrincipal();
@@ -208,7 +211,7 @@ public class PlaylistController {
 
 	@PutMapping("/liked/{id}")
 	@Transactional
-	@CacheEvict(value = "userPlaylistsLiked", allEntries = true)
+	@CacheEvict(value = "userPlaylists", allEntries = true)
 	public ResponseEntity<?> addLike(Authentication authentication, @PathVariable("id") Long id) {
 
 		User authenticatedUser = (User) authentication.getPrincipal();
@@ -236,7 +239,7 @@ public class PlaylistController {
 
 	@DeleteMapping("/unliked/{id}")
 	@Transactional
-	@CacheEvict(value = "userPlaylistsLiked", allEntries = true)
+	@CacheEvict(value = "userPlaylists", allEntries = true)
 	public ResponseEntity<?> removeLike(Authentication authentication, @PathVariable("id") Long id) {
 		User authenticatedUser = (User) authentication.getPrincipal();
 		User userLogged = userRepository.getById(authenticatedUser.getId());
@@ -261,7 +264,7 @@ public class PlaylistController {
 
 	@PostMapping("/{id}/songs")
 	@Transactional
-	@CacheEvict(value = "userPlaylistsLiked", allEntries = true)
+	@CacheEvict(value = "userPlaylists", allEntries = true)
 	public ResponseEntity<PlaylistDto> addSong(Authentication authentication, @RequestParam(required = true, name = "title") String title,
 			@PathVariable("id") Long id) throws Exception {
 
@@ -300,7 +303,7 @@ public class PlaylistController {
 
 	@DeleteMapping("/{id}/songs/{songId}")
 	@Transactional
-	@CacheEvict(value = "userPlaylistsLiked", allEntries = true)
+	@CacheEvict(value = "userPlaylists", allEntries = true)
 	public ResponseEntity<?> removeSong(Authentication authentication, @PathVariable("id") Long id,
 			@PathVariable("songId") Integer songId) {
 		User authenticatedUser = (User) authentication.getPrincipal();
