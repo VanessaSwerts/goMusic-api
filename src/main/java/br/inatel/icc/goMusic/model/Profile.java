@@ -7,7 +7,10 @@ import javax.persistence.Id;
 
 import org.springframework.security.core.GrantedAuthority;
 
+import lombok.Getter;
+
 @Entity
+@Getter
 public class Profile implements GrantedAuthority {
 
 	private static final long serialVersionUID = 1L;
@@ -17,14 +20,6 @@ public class Profile implements GrantedAuthority {
 	private Long id;
 
 	private String name;
-
-	public Long getId() {
-		return id;
-	}
-
-	public String getName() {
-		return name;
-	}
 
 	@Override
 	public String getAuthority() {

@@ -20,8 +20,11 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "users")
+@NoArgsConstructor
 public class User implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
@@ -54,9 +57,6 @@ public class User implements UserDetails {
 	@OneToMany(mappedBy = "follower", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<Follow> followers = new ArrayList<>();
-
-	public User() {
-	}
 
 	public User(String name, String email, String password, String avatar, String country) {
 		this.name = name;

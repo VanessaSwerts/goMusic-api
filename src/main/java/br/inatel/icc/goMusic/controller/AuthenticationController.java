@@ -16,19 +16,17 @@ import org.springframework.web.bind.annotation.RestController;
 import br.inatel.icc.goMusic.config.security.TokenService;
 import br.inatel.icc.goMusic.controller.dto.TokenDto;
 import br.inatel.icc.goMusic.controller.form.LoginForm;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/auth")
+@Slf4j
+@AllArgsConstructor(onConstructor = @__({ @Autowired }))
 public class AuthenticationController {
 
 	private AuthenticationManager authManager;
 	private TokenService tokenService;
-
-	@Autowired
-	public AuthenticationController(AuthenticationManager authManager, TokenService tokenService) {
-		this.authManager = authManager;
-		this.tokenService = tokenService;
-	}
 
 	@PostMapping("/login")
 	public ResponseEntity<TokenDto> login(@RequestBody @Valid LoginForm form) {
@@ -38,7 +36,8 @@ public class AuthenticationController {
 			Authentication authentication = authManager.authenticate(loginData);
 
 			String token = tokenService.generateToken(authentication);
-
+			
+			log.info("User realize login");
 			return ResponseEntity.status(200).body(new TokenDto(token, "Bearer"));
 		} catch (AuthenticationException e) {
 			return ResponseEntity.status(400).build();

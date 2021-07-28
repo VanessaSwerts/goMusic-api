@@ -14,7 +14,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class CloudinaryService {
 
 	private Cloudinary cloudinary;
@@ -45,13 +48,16 @@ public class CloudinaryService {
 
 		Map result = cloudinary.uploader().upload(file, params);
 		file.delete();
-
+		
+		log.info("Uploading an image to the Cloudinary");
 		return result;
 	}
 
 	@SuppressWarnings("rawtypes")
 	public Map delete(String id) throws IOException {
 		Map result = cloudinary.uploader().destroy(id, ObjectUtils.emptyMap());
+		
+		log.info("Removing an Image from Cloudinary");
 		return result;
 	}
 

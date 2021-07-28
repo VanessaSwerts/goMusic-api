@@ -6,7 +6,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 @Entity
+@NoArgsConstructor
+@Getter
 public class Follow {
 
 	@Id
@@ -19,24 +24,9 @@ public class Follow {
 	@ManyToOne
 	private User follower;
 
-	public Follow() {
-	}
-
 	public Follow(User following, User follower) {
 		this.following = following;
 		this.follower = follower;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public User getFollowing() {
-		return following;
-	}
-
-	public User getFollower() {
-		return follower;
 	}
 
 }

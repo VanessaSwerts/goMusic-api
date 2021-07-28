@@ -34,22 +34,18 @@ import br.inatel.icc.goMusic.model.Follow;
 import br.inatel.icc.goMusic.model.User;
 import br.inatel.icc.goMusic.repository.FollowRepository;
 import br.inatel.icc.goMusic.repository.UserRepository;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/users")
+@Slf4j
+@AllArgsConstructor(onConstructor = @__({ @Autowired }))
 public class UserController {
 
 	private UserRepository userRepository;
 	private FollowRepository followRepository;
 	private CloudinaryService cloudinaryService;
-
-	@Autowired
-	public UserController(UserRepository userRepository, FollowRepository followRepository,
-			CloudinaryService cloudinaryService) {
-		this.userRepository = userRepository;
-		this.followRepository = followRepository;
-		this.cloudinaryService = cloudinaryService;
-	}
 
 	@PostMapping
 	@Transactional
@@ -59,8 +55,16 @@ public class UserController {
 		String avatar = cloudinaryService.getCloudinaryDefault() + "/user/" + "default-avatar.png";
 		form.setAvatar(avatar);
 
+		Optional<User> emailsExists = userRepository.findByEmail(form.getEmail());
+		if (emailsExists.isPresent()) {
+			log.warn("User tried to create an account with an email that already exists!");
+			return ResponseEntity.status(403).build();
+		}
+
 		User newUser = form.convertToUser();
 		userRepository.save(newUser);
+
+		log.info("Created a new user account with ID: " + newUser.getId());
 
 		URI uri = uriBuilder.path("/users/{id}").buildAndExpand(newUser.getId()).toUri();
 		return ResponseEntity.created(uri).body(new UserDto(newUser));
@@ -72,6 +76,7 @@ public class UserController {
 		Optional<User> optionalUser = userRepository.findById(id);
 
 		if (optionalUser.isPresent()) {
+			log.info("List user data with ID: " + id);
 			return ResponseEntity.ok(new UserDto(optionalUser.get()));
 		}
 
@@ -88,6 +93,8 @@ public class UserController {
 
 		if (optionalUser.isPresent()) {
 			User updatedUser = form.updateUser(optionalUser.get());
+
+			log.info("Updated user data with ID: " + authenticatedUserId);
 			return ResponseEntity.ok(new UserDto(updatedUser));
 		}
 
@@ -109,6 +116,7 @@ public class UserController {
 			String avatar = uploadResult.get("public_id").toString() + "." + uploadResult.get("format").toString();
 
 			optionalUser.get().setAvatar(avatar);
+			log.info("Updated user avatar with ID: " + authenticatedUserId);
 			return ResponseEntity.ok(new UserDto(optionalUser.get()));
 		}
 
@@ -130,6 +138,8 @@ public class UserController {
 			optionalUser.get().getLikedPlaylists().clear();
 
 			userRepository.deleteById(authenticatedUserId);
+
+			log.info("Deleted user account with ID: " + authenticatedUserId);
 			return ResponseEntity.ok().build();
 		}
 
@@ -143,6 +153,8 @@ public class UserController {
 
 		if (optionalUser.isPresent()) {
 			List<UserDto> followersList = UserDto.convertToDtoList(optionalUser.get().getFollowers());
+
+			log.info("List user's followers with ID: " + id);
 			return ResponseEntity.ok(followersList);
 		}
 
@@ -156,6 +168,8 @@ public class UserController {
 
 		if (optionalUser.isPresent()) {
 			List<UserDto> followingsList = UserDto.convertToDtoList(optionalUser.get().getFollowings());
+
+			log.info("List user's followings with ID: " + id);
 			return ResponseEntity.ok(followingsList);
 		}
 
@@ -173,13 +187,14 @@ public class UserController {
 		if (userToFollow.isPresent()) {
 			Optional<Follow> isFollowing = followRepository.findByFollowingAndFollower(userLogged, userToFollow.get());
 
-			if (isFollowing.isPresent()) {
-				return ResponseEntity.status(202).build();
+			if (isFollowing.isPresent() || userLogged.getId() == userToFollow.get().getId()) {
+				return ResponseEntity.status(403).build();
 			}
 
 			Follow newFollow = new Follow(userLogged, userToFollow.get());
 			followRepository.save(newFollow);
 
+			log.info("User with ID: " + userLogged.getId() + "follows user with ID: " + userToFollow.get().getId());
 			return ResponseEntity.ok().build();
 		}
 
@@ -204,6 +219,7 @@ public class UserController {
 
 			followRepository.deleteById(isFollowing.get().getId());
 
+			log.info("User with ID: " + userLogged.getId() + "unfollows user with ID: " + userToUnfollow.get().getId());
 			return ResponseEntity.ok().build();
 		}
 
@@ -217,6 +233,8 @@ public class UserController {
 		if (optionalUser.isPresent()) {
 			List<PlaylistDto> playlists = PlaylistDto.concatTwoDtoList(optionalUser.get().getMyPlaylists(),
 					optionalUser.get().getLikedPlaylists());
+
+			log.info("List all user playlists");
 			return ResponseEntity.ok().body(playlists);
 		}
 
@@ -229,6 +247,8 @@ public class UserController {
 
 		if (optionalUser.isPresent()) {
 			List<PlaylistDto> playlistsCreated = PlaylistDto.convertToDtoList(optionalUser.get().getMyPlaylists());
+
+			log.info("List all user created playlists");
 			return ResponseEntity.ok().body(playlistsCreated);
 		}
 
@@ -242,6 +262,8 @@ public class UserController {
 
 		if (optionalUser.isPresent()) {
 			List<PlaylistDto> playlistsLiked = PlaylistDto.convertToDtoList(optionalUser.get().getLikedPlaylists());
+
+			log.info("List all user created playlists");
 			return ResponseEntity.ok().body(playlistsLiked);
 		}
 

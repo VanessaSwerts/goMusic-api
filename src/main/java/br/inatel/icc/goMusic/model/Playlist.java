@@ -15,7 +15,10 @@ import javax.persistence.OneToMany;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import lombok.NoArgsConstructor;
+
 @Entity
+@NoArgsConstructor
 public class Playlist {
 
 	@Id
@@ -35,9 +38,6 @@ public class Playlist {
 
 	@ElementCollection
 	private List<Integer> songsID = new ArrayList<>();
-
-	public Playlist() {
-	}
 
 	public Playlist(String title, String description, String avatar, User owner) {
 		this.title = title;
@@ -99,7 +99,7 @@ public class Playlist {
 	public void setTracksID(List<Integer> tracksID) {
 		this.songsID = tracksID;
 	}
-	
+
 	public boolean playlistContainsSong(Integer id) {
 		return songsID.contains(id);
 	}

@@ -31,7 +31,6 @@ import br.inatel.icc.goMusic.controller.dto.PlaylistDto;
 import br.inatel.icc.goMusic.controller.dto.UserDto;
 import br.inatel.icc.goMusic.controller.form.PlaylistForm;
 import br.inatel.icc.goMusic.controller.form.PlaylistFormUpdate;
-import br.inatel.icc.goMusic.controller.form.SearchForm;
 import br.inatel.icc.goMusic.domain.Tracks;
 import br.inatel.icc.goMusic.model.Like;
 import br.inatel.icc.goMusic.model.Playlist;
@@ -39,9 +38,13 @@ import br.inatel.icc.goMusic.model.User;
 import br.inatel.icc.goMusic.repository.LikeRepository;
 import br.inatel.icc.goMusic.repository.PlaylistRepository;
 import br.inatel.icc.goMusic.repository.UserRepository;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/playlists")
+@Slf4j
+@AllArgsConstructor(onConstructor = @__({ @Autowired }))
 public class PlaylistController {
 
 	private PlaylistRepository playlistRepository;
@@ -50,16 +53,6 @@ public class PlaylistController {
 
 	private CloudinaryService cloudinaryService;
 	private APIServiceConfigs apiService;
-
-	@Autowired
-	public PlaylistController(PlaylistRepository playlistRepository, UserRepository userRepository,
-			LikeRepository likeRepository, CloudinaryService cloudinaryService, APIServiceConfigs apiService) {
-		this.playlistRepository = playlistRepository;
-		this.userRepository = userRepository;
-		this.likeRepository = likeRepository;
-		this.cloudinaryService = cloudinaryService;
-		this.apiService = apiService;
-	}
 
 	@PostMapping
 	@Transactional
@@ -75,7 +68,9 @@ public class PlaylistController {
 
 		Playlist newPlaylist = form.convertToPlaylist();
 		playlistRepository.save(newPlaylist);
-
+		
+		log.info("User with ID:" + userLogged.getId() + " created a new playlist with ID: " + newPlaylist.getId());
+		
 		URI uri = uriBuilder.path("/playlists/{id}").buildAndExpand(newPlaylist.getId()).toUri();
 		return ResponseEntity.created(uri).body(new PlaylistDto(newPlaylist));
 	}
@@ -84,7 +79,8 @@ public class PlaylistController {
 	public ResponseEntity<List<PlaylistDto>> listAll() {
 
 		List<Playlist> playlists = playlistRepository.findAll();
-
+		
+		log.info("List all playlists");
 		return ResponseEntity.ok().body(PlaylistDto.convertToDtoList(playlists));
 	}
 
@@ -95,7 +91,8 @@ public class PlaylistController {
 
 		if (optionalPlaylist.isPresent()) {
 			PlaylistDto playlistDto = new PlaylistDto(optionalPlaylist.get());
-
+			
+			log.info("List playlist with ID:" + id);
 			return ResponseEntity.ok().body(playlistDto);
 		}
 
@@ -109,7 +106,8 @@ public class PlaylistController {
 
 		if (optionalPlaylist.isPresent()) {
 			PlaylistDto playlistDto = new PlaylistDto(optionalPlaylist.get());
-
+			
+			log.info("Search playlist with title:" + title);
 			return ResponseEntity.ok().body(playlistDto);
 		}
 
@@ -133,6 +131,8 @@ public class PlaylistController {
 			}
 
 			Playlist updatedPlaylist = form.updatePlaylist(optionalPlaylist.get());
+			
+			log.info("Updated playlist data with ID:" + id);
 			return ResponseEntity.ok(new PlaylistDto(updatedPlaylist));
 		}
 
@@ -159,6 +159,7 @@ public class PlaylistController {
 			String avatar = uploadResult.get("public_id").toString() + "." + uploadResult.get("format").toString();
 
 			optionalPlaylist.get().setAvatar(avatar);
+			log.info("Updated playlist avatar with ID:" + id);
 			return ResponseEntity.ok(new PlaylistDto(optionalPlaylist.get()));
 		}
 
@@ -181,6 +182,7 @@ public class PlaylistController {
 			}
 
 			playlistRepository.deleteById(id);
+			log.info("Deleted playlist with ID:" + id);
 			return ResponseEntity.ok().build();
 		}
 
@@ -196,6 +198,8 @@ public class PlaylistController {
 		if (optionalPlaylist.isPresent()) {
 
 			List<UserDto> likesList = UserDto.convertToDtoList(optionalPlaylist.get().getLikes());
+			
+			log.info("List playlist likes with ID:" + id);
 			return ResponseEntity.ok(likesList);
 		}
 
@@ -222,7 +226,8 @@ public class PlaylistController {
 
 			Like newLike = new Like(optionalPlaylistToLike.get(), userLogged);
 			likeRepository.save(newLike);
-
+			
+			log.info("User with ID: " + userLogged.getId() + " likes playlist with ID:" + id);
 			return ResponseEntity.ok().build();
 		}
 
@@ -246,7 +251,8 @@ public class PlaylistController {
 			}
 
 			likeRepository.deleteById(isLiked.get().getId());
-
+			
+			log.info("User with ID: " + userLogged.getId() + " remove like of playlist with ID:" + id);
 			return ResponseEntity.ok().build();
 		}
 
@@ -256,7 +262,7 @@ public class PlaylistController {
 	@PostMapping("/{id}/songs")
 	@Transactional
 	@CacheEvict(value = "userPlaylistsLiked", allEntries = true)
-	public ResponseEntity<PlaylistDto> addSong(Authentication authentication, @RequestBody @Valid SearchForm form,
+	public ResponseEntity<PlaylistDto> addSong(Authentication authentication, @RequestParam(required = true, name = "title") String title,
 			@PathVariable("id") Long id) throws Exception {
 
 		User authenticatedUser = (User) authentication.getPrincipal();
@@ -271,7 +277,7 @@ public class PlaylistController {
 				return ResponseEntity.status(403).build();
 			}
 
-			Tracks tracks = apiService.searchTrack(form.getTitle());
+			Tracks tracks = apiService.searchTrack(title);
 
 			if (tracks.getTotal() == 0) {
 				return ResponseEntity.notFound().build();
@@ -284,7 +290,8 @@ public class PlaylistController {
 			List<Integer> newTracks = currentPlaylist.getTracksID();
 			newTracks.add(tracks.getData().get(0).getId());
 			currentPlaylist.setTracksID(newTracks);
-
+			
+			log.info("User with ID: " + authenticatedUserId + " add the music " + title + " to the playlsit with ID:" + id);
 			return ResponseEntity.ok(new PlaylistDto(currentPlaylist));
 		}
 
@@ -310,7 +317,8 @@ public class PlaylistController {
 			List<Integer> newTracks = optionalPlaylist.get().getTracksID();
 			newTracks.remove(songId);
 			optionalPlaylist.get().setTracksID(newTracks);
-
+			
+			log.info("User with ID: " + authenticatedUserId + " remove the music with ID:" + songId + " to the playlsit with ID:" + id);
 			return ResponseEntity.ok().build();
 		}
 

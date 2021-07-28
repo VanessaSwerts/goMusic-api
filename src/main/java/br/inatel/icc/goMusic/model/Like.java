@@ -7,8 +7,13 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "likes")
+@NoArgsConstructor
+@Getter
 public class Like {
 
 	@Id
@@ -21,24 +26,9 @@ public class Like {
 	@ManyToOne
 	private User user;
 
-	public Like() {
-	}
-
 	public Like(Playlist playlist, User user) {
 		this.playlist = playlist;
 		this.user = user;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public Playlist getPlaylist() {
-		return playlist;
-	}
-
-	public User getUser() {
-		return user;
 	}
 
 }
