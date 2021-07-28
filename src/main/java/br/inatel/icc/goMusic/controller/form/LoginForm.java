@@ -1,10 +1,18 @@
 package br.inatel.icc.goMusic.controller.form;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 public class LoginForm {
 
+	@NotNull
+	@NotEmpty
 	private String email;
+	
+	@NotNull
+	@NotEmpty
 	private String password;
 
 	public String getEmail() {
