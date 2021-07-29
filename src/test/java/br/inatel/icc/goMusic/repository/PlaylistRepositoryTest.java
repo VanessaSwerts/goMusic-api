@@ -30,7 +30,7 @@ class PlaylistRepositoryTest {
 	}
 	
 	@Test
-	public void shouldNotFindUserByEmail() {
+	public void shouldNotFindPlaylistByTitle() {
 		String title = "My test playlist";
 		Optional<Playlist> playlist = playlistRepository.findByTitle(title);
 
