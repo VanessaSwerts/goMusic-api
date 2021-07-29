@@ -73,6 +73,7 @@ public class UserController {
 	@GetMapping("/{id}")
 	@Transactional
 	public ResponseEntity<UserDto> list(@PathVariable("id") Long id) {
+
 		Optional<User> optionalUser = userRepository.findById(id);
 
 		if (optionalUser.isPresent()) {
@@ -256,7 +257,7 @@ public class UserController {
 		return ResponseEntity.status(404).build();
 	}
 
-	@GetMapping("/{id}/playlistsLiked")	
+	@GetMapping("/{id}/playlistsLiked")
 	public ResponseEntity<List<PlaylistDto>> listUserPlaylistsLiked(@PathVariable("id") Long id) {
 		Optional<User> optionalUser = userRepository.findById(id);
 

@@ -31,6 +31,7 @@ import br.inatel.icc.goMusic.controller.dto.PlaylistDto;
 import br.inatel.icc.goMusic.controller.dto.UserDto;
 import br.inatel.icc.goMusic.controller.form.PlaylistForm;
 import br.inatel.icc.goMusic.controller.form.PlaylistFormUpdate;
+import br.inatel.icc.goMusic.controller.form.SearchForm;
 import br.inatel.icc.goMusic.domain.Tracks;
 import br.inatel.icc.goMusic.model.Like;
 import br.inatel.icc.goMusic.model.Playlist;
@@ -265,7 +266,7 @@ public class PlaylistController {
 	@PostMapping("/{id}/songs")
 	@Transactional
 	@CacheEvict(value = "userPlaylists", allEntries = true)
-	public ResponseEntity<PlaylistDto> addSong(Authentication authentication, @RequestParam(required = true, name = "title") String title,
+	public ResponseEntity<PlaylistDto> addSong(Authentication authentication, @RequestBody @Valid SearchForm form,
 			@PathVariable("id") Long id) throws Exception {
 
 		User authenticatedUser = (User) authentication.getPrincipal();
@@ -280,7 +281,7 @@ public class PlaylistController {
 				return ResponseEntity.status(403).build();
 			}
 
-			Tracks tracks = apiService.searchTrack(title);
+			Tracks tracks = apiService.searchTrack(form.getTitle());
 
 			if (tracks.getTotal() == 0) {
 				return ResponseEntity.notFound().build();
@@ -294,7 +295,7 @@ public class PlaylistController {
 			newTracks.add(tracks.getData().get(0).getId());
 			currentPlaylist.setTracksID(newTracks);
 			
-			log.info("User with ID: " + authenticatedUserId + " add the music " + title + " to the playlsit with ID:" + id);
+			log.info("User with ID: " + authenticatedUserId + " add the music " + form.getTitle() + " to the playlsit with ID:" + id);
 			return ResponseEntity.ok(new PlaylistDto(currentPlaylist));
 		}
 
